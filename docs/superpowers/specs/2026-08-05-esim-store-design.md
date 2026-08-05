@@ -66,7 +66,7 @@ Supabase Postgres. **RLS enabled on every table, deny by default.** Policies gra
 | `profiles` | `id` (=auth.uid), `email`, `role` | `role` is never writable by the owning user |
 | `plans` | `slug`, `region`, `data_mb`, `duration_days`, `price_cents`, `currency`, `provider_plan_code`, `active` | public read only, no write policy |
 | `esim_profiles` | `plan_id`, `iccid`, `activation_code`, `status` (`available`/`reserved`/`consumed`) | claimed atomically, see §6.2 |
-| `orders` | `user_id`, `status`, `subtotal_cents`, `total_cents`, `currency`, `idempotency_key`, timestamps | `idempotency_key` UNIQUE per user |
+| `orders` | `user_id`, `status`, `subtotal_cents`, `total_cents`, `currency`, `idempotency_key`, `payment_deadline_at`, timestamps | `idempotency_key` UNIQUE per user |
 | `order_items` | `order_id`, `plan_id`, `qty`, `unit_price_cents` | price written server-side only |
 | `payments` | `order_id`, `provider_ref`, `status`, `amount_cents`, `failure_reason`, `requested_at`, `settled_at` | one active payment per order |
 | `webhook_events` | `provider_event_id`, `type`, `payload`, `received_at`, `processed_at` | `provider_event_id` **UNIQUE** — the idempotency ledger |
@@ -171,7 +171,7 @@ Checkout carries an explicit **scenario selector**. **No card fields exist anywh
 |---|---|---|
 | Approve | default | callback confirms → fulfilment → QR + ICCID in account |
 | Decline | selector | callback returns `declined`; order terminal, nothing reserved or consumed |
-| Timeout | selector | provider deliberately never calls back; reconciliation cron sweeps `awaiting_payment` older than 90s → `payment_timeout` |
+| Timeout | selector | provider deliberately never calls back; any read of an `awaiting_payment` order past its 90s deadline reconciles it to `payment_timeout` (§6.5) |
 | Provider failure | selector | payment succeeds, provisioning returns 503; **order stays paid and visible**, → `fulfilment_failed`, auto-retry ×3 with backoff, then awaits admin retry |
 | Stock exhaustion | drain a plan's pool | payment succeeds, no profile available; same non-losing path, reason `out_of_stock` |
 
@@ -186,10 +186,28 @@ Three independent layers:
 2. **Callback** — `provider_event_id` UNIQUE in `webhook_events`; replays return `200 OK` and do nothing.
 3. **Delivery** — `order_item_id` UNIQUE in `fulfilments`; a second delivery cannot be written.
 
-### 6.5 Retry
+### 6.5 Reconciliation and retry — no scheduler
 
-Automatic: a Vercel Cron sweeps `fulfilment_failed` rows with `attempts < 3` on an exponential backoff.
-Manual: the admin view exposes a retry action per failed order, writing to `admin_actions`.
+**Constraint:** Vercel's Hobby plan permits cron jobs only once per day, and paying for minute-level schedules
+is out of budget for an assessment. The design therefore uses no scheduler at all.
+
+**Timeout reconciliation (lazy).** Orders carry a `payment_deadline_at`. Any server-side read of an order in
+`awaiting_payment` past that deadline transitions it to `payment_timeout` before returning. The receipt page
+is already watching the order the customer just placed, so reconciliation happens precisely when someone is
+looking at it. The account and admin lists reconcile the rows they load, by the same rule.
+
+**Fulfilment retry.** Three layers, none scheduled:
+
+1. **Inline** — the request that received the `paid` callback retries provisioning with backoff via `after()`,
+   outside the response path, up to 3 attempts.
+2. **On read** — loading a `fulfilment_failed` order with `attempts < 3` and an elapsed backoff window
+   re-attempts before rendering.
+3. **Manual** — the admin retry action, which the brief requires, writing to `admin_actions`.
+
+This is strictly simpler than a scheduler and easier to defend in the walkthrough: there is no invisible actor,
+every transition is caused by a request someone can point at. The trade-off — an abandoned failed order stays
+failed until someone loads it — is acceptable here and named in the README, where a durable queue is listed as
+the production answer.
 
 ---
 
@@ -289,5 +307,15 @@ real processor · multi-currency · i18n.
 
 ## 15. Deferred, and named in the README as next steps
 
-Splitting the provider into its own deployment · durable workflow orchestration (Vercel Workflow) in place of
-the cron-driven retry · custom SMTP for reliable magic links · webhook dead-letter queue with alerting.
+Splitting the provider into its own deployment · a durable queue or workflow engine in place of lazy
+reconciliation, so abandoned failed orders self-heal without a reader · custom SMTP for reliable magic links ·
+webhook dead-letter queue with alerting.
+
+---
+
+## 16. Cost
+
+Everything runs on free tiers, by requirement: Supabase free project, Vercel Hobby, Supabase built-in SMTP, no
+custom domain, no payment provider. No service in this design requires a card. The two places where a paid
+tier would normally be reached for — minute-level crons (§6.5) and reliable transactional email (§5) — are
+each solved by an explicit design choice and documented as such rather than papered over.
