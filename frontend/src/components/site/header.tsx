@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { getUser } from '@/lib/auth'
 import { signOut } from '@/app/login/actions'
+import { CartLink } from './cart-link'
 
 export async function Header() {
   const user = await getUser()
@@ -40,12 +41,7 @@ export async function Header() {
             </Link>
           )}
 
-          <Link
-            href="/cart"
-            className="rounded-md border border-border px-3.5 py-1.5 transition-colors hover:border-accent hover:text-accent"
-          >
-            Cart
-          </Link>
+          <CartLink />
         </nav>
       </div>
     </header>
