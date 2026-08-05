@@ -4,6 +4,7 @@ import { requireUser } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
 import { formatPrice } from '@/lib/format'
 import type { OrderStatus } from '@/lib/orders/status'
+import { ClearCartOnOrder } from '@/components/commerce/clear-cart-on-order'
 
 export const metadata: Metadata = { title: 'Your order — Easim' }
 
@@ -17,8 +18,9 @@ export const metadata: Metadata = { title: 'Your order — Easim' }
  * user, and row level security returns nothing for an order belonging to
  * somebody else — which surfaces as a 404, exactly as it should.
  */
-export default async function OrderPage({ params }: PageProps<'/orders/[id]'>) {
+export default async function OrderPage({ params, searchParams }: PageProps<'/orders/[id]'>) {
   const { id } = await params
+  const { placed } = await searchParams
   await requireUser()
 
   const supabase = await createClient()
@@ -32,6 +34,7 @@ export default async function OrderPage({ params }: PageProps<'/orders/[id]'>) {
 
   return (
     <div className="mx-auto w-full max-w-2xl px-6 py-16">
+      {placed ? <ClearCartOnOrder /> : null}
       <p className="text-sm tracking-[0.18em] text-muted uppercase">Order</p>
       <h1 className="mt-3 font-mono text-2xl break-all">{order.id}</h1>
 
