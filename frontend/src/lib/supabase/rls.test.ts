@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeAll } from 'vitest'
 import { createClient } from '@supabase/supabase-js'
 
 /**
@@ -9,10 +9,10 @@ import { createClient } from '@supabase/supabase-js'
  * fail, the database is leaking, and no amount of careful application code
  * would fix it.
  */
-const anon = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
-)
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!
+
+const anon = createClient(SUPABASE_URL, PUBLISHABLE_KEY)
 
 describe('row level security, as a signed-out visitor', () => {
   it('can read the catalogue', async () => {
@@ -82,5 +82,92 @@ describe('row level security, as a signed-out visitor', () => {
   it('cannot mark an order paid', async () => {
     const { error } = await anon.from('orders').update({ status: 'paid' }).neq('id', '')
     expect(error).not.toBeNull()
+  })
+})
+
+/**
+ * The same checks from inside a real session.
+ *
+ * The tests above use the signed-out key. These mint an actual customer
+ * session, because the most valuable question is not "what can a stranger
+ * do" but "what can a legitimate, signed-in customer do that they should
+ * not".
+ */
+describe('row level security, as a signed-in customer', () => {
+  let customerHeaders: Record<string, string>
+
+  beforeAll(async () => {
+    const admin = createClient(SUPABASE_URL, process.env.SUPABASE_SECRET_KEY!, {
+      auth: { persistSession: false },
+    })
+
+    const { data: link } = await admin.auth.admin.generateLink({
+      type: 'magiclink',
+      email: process.env.DEMO_CUSTOMER_EMAIL!,
+    })
+
+    const anonClientForVerify = createClient(SUPABASE_URL, PUBLISHABLE_KEY, {
+      auth: { persistSession: false },
+    })
+    const { data: session } = await anonClientForVerify.auth.verifyOtp({
+      type: 'magiclink',
+      token_hash: link.properties!.hashed_token,
+    })
+
+    customerHeaders = {
+      apikey: PUBLISHABLE_KEY,
+      Authorization: `Bearer ${session.session!.access_token}`,
+      'Content-Type': 'application/json',
+    }
+  })
+
+  it('reads only their own profile, never another customer or the admin', async () => {
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/profiles?select=email`, {
+      headers: customerHeaders,
+    })
+    const rows = (await response.json()) as { email: string }[]
+
+    expect(rows).toHaveLength(1)
+    expect(rows[0].email).toBe(process.env.DEMO_CUSTOMER_EMAIL)
+  })
+
+  /**
+   * The privilege escalation attempt, and the most important test in this file.
+   *
+   * Note what "blocked" looks like: PostgREST answers 204, because the update
+   * matched zero rows once row level security filtered them out. It is not an
+   * error — it is a write that touched nothing. The assertion that matters is
+   * the one after it.
+   */
+  it('cannot promote itself to admin', async () => {
+    await fetch(`${SUPABASE_URL}/rest/v1/profiles?email=eq.${process.env.DEMO_CUSTOMER_EMAIL}`, {
+      method: 'PATCH',
+      headers: customerHeaders,
+      body: JSON.stringify({ role: 'admin' }),
+    })
+
+    const check = await fetch(`${SUPABASE_URL}/rest/v1/profiles?select=role`, {
+      headers: customerHeaders,
+    })
+    const rows = (await check.json()) as { role: string }[]
+
+    expect(rows[0].role).toBe('customer')
+  })
+
+  it('cannot read another customer’s orders', async () => {
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/orders?select=id,user_id`, {
+      headers: customerHeaders,
+    })
+    const rows = (await response.json()) as { user_id: string }[]
+
+    const distinctOwners = new Set(rows.map((row) => row.user_id))
+    expect(distinctOwners.size).toBeLessThanOrEqual(1)
+  })
+
+  it('still cannot reach the webhook ledger while signed in', async () => {
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/webhook_events?select=id`, {
+      headers: customerHeaders,
+    })
+    expect(await response.json()).toEqual([])
   })
 })
