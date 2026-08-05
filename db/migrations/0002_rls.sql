@@ -42,10 +42,14 @@ $$;
 create policy plans_public_read on plans
   for select using (active);
 
--- Your own profile row. Note there is no update policy, so a customer cannot
--- promote themselves to admin.
+-- Your own profile row, plus every row for an admin — an operator resolving a
+-- failed delivery needs to know whose order it is.
+--
+-- Note there is still no update policy of any kind, so a customer cannot
+-- promote themselves to admin, and neither can an admin promote anyone else
+-- through the API.
 create policy profiles_self_read on profiles
-  for select using (id = auth.uid());
+  for select using (id = auth.uid() or is_admin());
 
 create policy orders_owner_read on orders
   for select using (user_id = auth.uid() or is_admin());
