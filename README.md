@@ -209,7 +209,7 @@ Other measures:
 - Zod validation at every boundary, including `localStorage`, which is
   user-editable and therefore untrusted input.
 - Authorisation lives in `requireUser()` / `requireAdmin()`, called explicitly.
-  **Middleware only redirects for the sake of the experience** — delete it and
+  **The proxy (formerly middleware) only redirects for the sake of the experience** — delete it and
   nothing becomes readable.
 - `requireAdmin()` redirects to `/` rather than showing a "forbidden" page,
   which would confirm `/admin` exists.
