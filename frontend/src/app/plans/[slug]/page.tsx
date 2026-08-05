@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getActivePlans, getAvailability, getPlanBySlug } from '@/lib/plans'
 import { formatData, formatDuration, formatPrice } from '@/lib/format'
+import { AddToCart } from '@/components/commerce/add-to-cart'
 
 /**
  * Pre-renders the eight known slugs at build time. Unknown slugs still work,
@@ -59,14 +60,7 @@ export default async function PlanPage({ params }: PageProps<'/plans/[slug]'>) {
           </p>
         )}
 
-        {/* Replaced by the real Add to cart control in task 6. */}
-        <button
-          type="button"
-          disabled
-          className="mt-5 w-full cursor-not-allowed rounded-lg border border-border px-5 py-3 text-sm text-muted"
-        >
-          Add to cart — coming in the next step
-        </button>
+        <AddToCart planId={plan.id} soldOut={soldOut} />
       </div>
 
       <section className="mt-12 space-y-3 text-sm text-muted">
