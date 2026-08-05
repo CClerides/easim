@@ -62,7 +62,7 @@ const FILTERS = [
 export default async function AdminPage({ searchParams }: PageProps<'/admin'>) {
   await requireAdmin()
 
-  const { filter } = await searchParams
+  const { filter, retried } = await searchParams
   const showAll = filter === 'all'
 
   const supabase = await createClient()
@@ -135,6 +135,16 @@ export default async function AdminPage({ searchParams }: PageProps<'/admin'>) {
           })}
         </nav>
       </div>
+
+      {retried ? (
+        <p
+          role="status"
+          className="mt-8 rounded-lg border border-success/40 bg-success/5 p-4 text-sm text-success"
+        >
+          Delivered. Order <code className="font-mono">{retried}</code> has been
+          fulfilled and the customer has their eSIM.
+        </p>
+      ) : null}
 
       {rows.length === 0 ? (
         <div className="mt-10 rounded-xl border border-border bg-surface p-8">
