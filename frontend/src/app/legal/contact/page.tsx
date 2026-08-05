@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 
-export const metadata: Metadata = { title: 'Contact — Trezuz eSIM' }
+export const metadata: Metadata = { title: 'Contact — Easim' }
 
 export default function ContactPage() {
   return (
@@ -10,8 +10,8 @@ export default function ContactPage() {
       <h2>Support</h2>
       <p>
         Email{' '}
-        <a href="mailto:support@trezuz.dev" className="underline underline-offset-4">
-          support@trezuz.dev
+        <a href="mailto:support@easim.dev" className="underline underline-offset-4">
+          support@easim.dev
         </a>
         . Include your order reference — it is the identifier at the top of your
         receipt — and we will answer within two working days.

@@ -9,7 +9,7 @@ export function Header() {
             aria-hidden
             className="size-2.5 rounded-full bg-accent shadow-[0_0_12px_var(--accent)]"
           />
-          <span className="text-sm font-semibold tracking-[0.18em] uppercase">Trezuz</span>
+          <span className="text-sm font-semibold tracking-[0.18em] uppercase">Easim</span>
         </Link>
 
         <nav className="flex items-center gap-7 text-sm">

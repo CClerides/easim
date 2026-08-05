@@ -12,15 +12,15 @@ importers:
 
   frontend:
     dependencies:
+      '@easim/mock-provider':
+        specifier: workspace:*
+        version: link:../backend
       '@supabase/ssr':
         specifier: ^0.12.4
         version: 0.12.4(@supabase/supabase-js@2.112.1)
       '@supabase/supabase-js':
         specifier: ^2.112.1
         version: 2.112.1
-      '@trezuz/mock-provider':
-        specifier: workspace:*
-        version: link:../backend
       '@vercel/analytics':
         specifier: ^2.0.1
         version: 2.0.1(next@16.3.0(@babel/core@7.29.7)(@types/node@20.19.43)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react@19.2.8)

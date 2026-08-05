@@ -5,14 +5,14 @@
 
 insert into plans (slug, region, country_code, data_mb, duration_days, price_cents, provider_plan_code)
 values
-  ('europe-5gb-15d',   'Europe',   'EU',  5120, 15, 1490, 'TZ-EU-5G-15D'),
-  ('japan-10gb-30d',   'Japan',    'JP', 10240, 30, 2790, 'TZ-JP-10G-30D'),
-  ('usa-3gb-7d',       'USA',      'US',  3072,  7,  990, 'TZ-US-3G-7D'),
-  ('global-20gb-30d',  'Global',   'WW', 20480, 30, 4990, 'TZ-WW-20G-30D'),
-  ('turkey-10gb-15d',  'Turkey',   'TR', 10240, 15, 1890, 'TZ-TR-10G-15D'),
-  ('uae-5gb-7d',       'UAE',      'AE',  5120,  7, 1690, 'TZ-AE-5G-7D'),
-  ('thailand-8gb-15d', 'Thailand', 'TH',  8192, 15, 1590, 'TZ-TH-8G-15D'),
-  ('mexico-5gb-30d',   'Mexico',   'MX',  5120, 30, 1390, 'TZ-MX-5G-30D')
+  ('europe-5gb-15d',   'Europe',   'EU',  5120, 15, 1490, 'EA-EU-5G-15D'),
+  ('japan-10gb-30d',   'Japan',    'JP', 10240, 30, 2790, 'EA-JP-10G-30D'),
+  ('usa-3gb-7d',       'USA',      'US',  3072,  7,  990, 'EA-US-3G-7D'),
+  ('global-20gb-30d',  'Global',   'WW', 20480, 30, 4990, 'EA-WW-20G-30D'),
+  ('turkey-10gb-15d',  'Turkey',   'TR', 10240, 15, 1890, 'EA-TR-10G-15D'),
+  ('uae-5gb-7d',       'UAE',      'AE',  5120,  7, 1690, 'EA-AE-5G-7D'),
+  ('thailand-8gb-15d', 'Thailand', 'TH',  8192, 15, 1590, 'EA-TH-8G-15D'),
+  ('mexico-5gb-30d',   'Mexico',   'MX',  5120, 30, 1390, 'EA-MX-5G-30D')
 on conflict (slug) do update set
   region             = excluded.region,
   country_code       = excluded.country_code,
@@ -32,7 +32,7 @@ insert into profiles (id, email)
 select id, email from auth.users
 on conflict (id) do nothing;
 
-update profiles set role = 'admin' where email = 'admin@trezuz.dev';
+update profiles set role = 'admin' where email = 'admin@easim.dev';
 
 -- Stock.
 --
@@ -57,7 +57,7 @@ begin
       values (
         plan.id,
         '8944' || lpad(floor(random() * 1e15)::bigint::text, 15, '0'),
-        'LPA:1$rsp.trezuz.dev$' || upper(substr(md5(random()::text), 1, 16))
+        'LPA:1$rsp.easim.dev$' || upper(substr(md5(random()::text), 1, 16))
       )
       on conflict (iccid) do nothing;
 

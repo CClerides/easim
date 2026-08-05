@@ -3,7 +3,7 @@ import { getActivePlans, getAvailability } from '@/lib/plans'
 import { PlanCard } from '@/components/commerce/plan-card'
 
 export const metadata: Metadata = {
-  title: 'Plans — Trezuz eSIM',
+  title: 'Plans — Easim',
   description: 'Prepaid eSIM data plans by country and duration.',
 }
 

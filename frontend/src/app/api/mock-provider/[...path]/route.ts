@@ -1,5 +1,5 @@
 import { after } from 'next/server'
-import { handleProviderRequest } from '@trezuz/mock-provider'
+import { handleProviderRequest } from '@easim/mock-provider'
 import { serverEnv } from '@/lib/env.server'
 
 /**

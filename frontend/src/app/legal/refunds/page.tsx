@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 
-export const metadata: Metadata = { title: 'Refund policy — Trezuz eSIM' }
+export const metadata: Metadata = { title: 'Refund policy — Easim' }
 
 export default function RefundsPage() {
   return (

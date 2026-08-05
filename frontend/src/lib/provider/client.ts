@@ -1,6 +1,6 @@
 import 'server-only'
 import { serverEnv } from '@/lib/env.server'
-import type { PaymentScenario } from '@trezuz/mock-provider'
+import type { PaymentScenario } from '@easim/mock-provider'
 
 /**
  * The store's HTTP client for the payment and eSIM provider.

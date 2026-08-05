@@ -51,7 +51,7 @@ export function provision(body: ProvisionRequest): ProvisionResult | { failure: 
 
   return {
     iccid: generateIccid(),
-    activationCode: `LPA:1$rsp.trezuz.dev$${randomUUID().replaceAll('-', '').slice(0, 16).toUpperCase()}`,
+    activationCode: `LPA:1$rsp.easim.dev$${randomUUID().replaceAll('-', '').slice(0, 16).toUpperCase()}`,
     providerRef: `esim_${randomUUID()}`,
   }
 }

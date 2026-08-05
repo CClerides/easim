@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 
-export const metadata: Metadata = { title: 'Privacy — Trezuz eSIM' }
+export const metadata: Metadata = { title: 'Privacy — Easim' }
 
 export default function PrivacyPage() {
   return (

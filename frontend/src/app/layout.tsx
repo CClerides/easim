@@ -9,7 +9,7 @@ const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] })
 const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Trezuz eSIM — data plans that arrive in seconds',
+  title: 'Easim — data plans that arrive in seconds',
   description:
     'Prepaid eSIM data plans for travel. Pick a country, pay, and the QR code lands in your account automatically.',
 }
