@@ -33,7 +33,24 @@ export type FulfilmentOutcome = {
   lastError?: string
 }
 
-export async function fulfilOrder(orderId: string): Promise<FulfilmentOutcome> {
+export type FulfilOptions = {
+  /**
+   * Provision as if the provider were healthy, whatever the order originally
+   * asked for.
+   *
+   * Only the admin retry sets this, and it is the honest way to model "the
+   * outage is over". Automatic retries deliberately do not: they replay the
+   * original scenario, so a `provider_failure` order really does exhaust its
+   * three attempts rather than being quietly rescued by the code that is
+   * supposed to be demonstrating failure.
+   */
+  assumeProviderRecovered?: boolean
+}
+
+export async function fulfilOrder(
+  orderId: string,
+  options: FulfilOptions = {},
+): Promise<FulfilmentOutcome> {
   const supabase = createAdminClient()
 
   const { data: order } = await supabase
@@ -68,7 +85,11 @@ export async function fulfilOrder(orderId: string): Promise<FulfilmentOutcome> {
       planId: item.plan_id,
       providerPlanCode: (item.plans as unknown as { provider_plan_code: string })
         .provider_plan_code,
-      scenario: order.scenario as PaymentScenario,
+      // An admin retry provisions as if the provider had recovered; an
+      // automatic retry replays what the order actually asked for.
+      scenario: options.assumeProviderRecovered
+        ? 'approve'
+        : (order.scenario as PaymentScenario),
     })
 
     if (outcome.ok) {
