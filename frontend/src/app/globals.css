@@ -1,28 +1,64 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
+/**
+ * Base tokens.
+ *
+ * The direction is dark cinematic infrastructure: a deep neutral ground, one
+ * accent, and status colours that map to order states so a badge never picks
+ * its own colour. Components reference these names and never raw hex.
+ *
+ * Committed to dark only. A shop that is dark on one machine and light on
+ * another is two designs to get right, and the whole point of the direction is
+ * a single, deliberate look.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #08090c;
+  --surface: #0e1015;
+  --surface-raised: #14171e;
+  --border: #23272f;
+
+  --foreground: #f2f4f7;
+  --muted: #99a0ad;
+
+  --accent: #4f9dff;
+  --accent-strong: #7cb8ff;
+
+  --success: #3fbf8f;
+  --warning: #e0a33c;
+  --danger: #f2616b;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-border: var(--border);
   --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  /* The scaffold hardcoded Arial here, which silently overrode the webfont
-     loaded in layout.tsx. The typeface itself is chosen in the design pass. */
   font-family: var(--font-sans);
+}
+
+/* Nothing in this build animates without asking, and everything stops when
+   the reader has asked the system for less motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
