@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 
-export const metadata: Metadata = { title: 'Terms of service — Trezuz eSIM' }
+export const metadata: Metadata = { title: 'Terms of service — Easim' }
 
 export default function TermsPage() {
   return (
@@ -10,7 +10,7 @@ export default function TermsPage() {
 
       <h2>1. What this service is</h2>
       <p>
-        Trezuz eSIM offers prepaid mobile data plans delivered as eSIM profiles. A
+        Easim offers prepaid mobile data plans delivered as eSIM profiles. A
         plan is software: an activation QR code and an ICCID, delivered to your
         account. Nothing is shipped.
       </p>

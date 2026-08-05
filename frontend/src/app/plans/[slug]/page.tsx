@@ -15,10 +15,10 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps<'/plans/[slug]'>): Promise<Metadata> {
   const { slug } = await params
   const plan = await getPlanBySlug(slug)
-  if (!plan) return { title: 'Plan not found — Trezuz eSIM' }
+  if (!plan) return { title: 'Plan not found — Easim' }
 
   return {
-    title: `${plan.region} ${formatData(plan.data_mb)} — Trezuz eSIM`,
+    title: `${plan.region} ${formatData(plan.data_mb)} — Easim`,
     description: `${formatData(plan.data_mb)} of data in ${plan.region} for ${formatDuration(plan.duration_days)}.`,
   }
 }

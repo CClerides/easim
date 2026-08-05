@@ -8,8 +8,8 @@ const valid = {
   PROVIDER_BASE_URL: 'http://localhost:3000/api/mock-provider',
   PROVIDER_HMAC_SECRET: 'a-secret-at-least-16-chars',
   APP_BASE_URL: 'http://localhost:3000',
-  DEMO_CUSTOMER_EMAIL: 'demo@trezuz.dev',
-  DEMO_ADMIN_EMAIL: 'admin@trezuz.dev',
+  DEMO_CUSTOMER_EMAIL: 'demo@easim.dev',
+  DEMO_ADMIN_EMAIL: 'admin@easim.dev',
 }
 
 describe('parseEnv', () => {

@@ -74,7 +74,7 @@ trezuz/
 │   └── README.md                  # how to apply, in order
 │
 ├── backend/                       # the "outside world" — mock provider service
-│   ├── package.json               # name: @trezuz/mock-provider
+│   ├── package.json               # name: @easim/mock-provider
 │   └── src/
 │       ├── index.ts               # handleProviderRequest(Request): Response — the only export
 │       ├── payments.ts            # authorize + scenario logic + callback dispatch
@@ -101,7 +101,7 @@ trezuz/
         │   └── api/
         │       ├── webhooks/payment/route.ts            # inbound callback
         │       ├── auth/confirm/route.ts                # magic-link exchange
-        │       └── mock-provider/[...path]/route.ts     # mounts @trezuz/mock-provider
+        │       └── mock-provider/[...path]/route.ts     # mounts @easim/mock-provider
         ├── components/
         │   ├── site/     header.tsx  footer.tsx  cookie-banner.tsx
         │   ├── ui/       button.tsx  card.tsx  badge.tsx  (+ 21st.dev additions)
@@ -163,7 +163,7 @@ Answer `No` to any prompt offering extra libraries. Keep the scaffold minimal.
 
 ```json
 {
-  "name": "trezuz",
+  "name": "easim",
   "private": true,
   "scripts": {
     "dev": "pnpm --filter frontend dev",
@@ -560,7 +560,7 @@ insert into plans (slug, region, country_code, data_mb, duration_days, price_cen
 insert into esim_profiles (plan_id, iccid, activation_code)
 select p.id,
        '8944' || lpad((floor(random() * 1e15))::bigint::text, 15, '0'),
-       'LPA:1$rsp.trezuz.dev$' || upper(substr(md5(random()::text), 1, 16))
+       'LPA:1$rsp.easim.dev$' || upper(substr(md5(random()::text), 1, 16))
 from plans p,
      generate_series(1, 10) g
 where p.slug <> 'usa-3gb-7d';
@@ -568,7 +568,7 @@ where p.slug <> 'usa-3gb-7d';
 insert into esim_profiles (plan_id, iccid, activation_code)
 select p.id,
        '8944' || lpad((floor(random() * 1e15))::bigint::text, 15, '0'),
-       'LPA:1$rsp.trezuz.dev$' || upper(substr(md5(random()::text), 1, 16))
+       'LPA:1$rsp.easim.dev$' || upper(substr(md5(random()::text), 1, 16))
 from plans p where p.slug = 'usa-3gb-7d';
 ```
 
@@ -579,10 +579,10 @@ Run `0001`, `0002`, `0003`, then `seed.sql`, in that order. Confirm in the Table
 - [ ] **Step 7: Create the demo users**
 
 In the Supabase dashboard under Authentication → Users, add two users with "Auto Confirm":
-- `demo@trezuz.dev`
-- `admin@trezuz.dev`
+- `demo@easim.dev`
+- `admin@easim.dev`
 
-Then promote the admin: `update profiles set role = 'admin' where email = 'admin@trezuz.dev';`
+Then promote the admin: `update profiles set role = 'admin' where email = 'admin@easim.dev';`
 
 Record both UUIDs — Task 5 needs them. **Do not commit them**; they go in `.env.local` as `DEMO_CUSTOMER_EMAIL` and `DEMO_ADMIN_EMAIL`, and both must be added to `.env.example` as placeholders and to `frontend/src/lib/env.ts`'s schema as `z.string().email()`.
 
@@ -1028,7 +1028,7 @@ Test the pure reducer, not the React hook: adding a new plan appends; adding an 
 
 - [ ] **Step 2: Implement the store**
 
-Plain React `useState` + `useEffect` persistence to `localStorage` under key `trezuz.cart.v1`, exposed through a Context provider. No state library — the cart is four operations and a list.
+Plain React `useState` + `useEffect` persistence to `localStorage` under key `easim.cart.v1`, exposed through a Context provider. No state library — the cart is four operations and a list.
 
 Parse the persisted value with a Zod schema; on failure, reset to empty. A user can edit `localStorage`, so treat it as untrusted input.
 
@@ -1154,7 +1154,7 @@ Signing `${timestamp}.${body}` rather than the body alone is what stops a captur
 
 - [ ] **Step 3: Build the provider package**
 
-`backend/package.json` with `"name": "@trezuz/mock-provider"`, `"main": "src/index.ts"`, no build step. Add it to `frontend`'s dependencies as `"@trezuz/mock-provider": "workspace:*"` and add `transpilePackages: ['@trezuz/mock-provider']` to `next.config.ts`.
+`backend/package.json` with `"name": "@easim/mock-provider"`, `"main": "src/index.ts"`, no build step. Add it to `frontend`'s dependencies as `"@easim/mock-provider": "workspace:*"` and add `transpilePackages: ['@easim/mock-provider']` to `next.config.ts`.
 
 `handleProviderRequest` routes on `new URL(request.url).pathname`:
 
@@ -1170,7 +1170,7 @@ Every callback body carries a unique `event_id` (a UUID) and is signed with `PRO
 - [ ] **Step 4: Mount it in the Next app**
 
 ```ts
-import { handleProviderRequest } from '@trezuz/mock-provider'
+import { handleProviderRequest } from '@easim/mock-provider'
 
 export const POST = (request: Request) => handleProviderRequest(request)
 export const GET = (request: Request) => handleProviderRequest(request)

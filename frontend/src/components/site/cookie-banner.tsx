@@ -15,11 +15,11 @@ import { Analytics } from '@vercel/analytics/react'
  * future server-rendered decision can read it too.
  */
 
-const COOKIE_NAME = 'trezuz.consent.v1'
+const COOKIE_NAME = 'easim.consent.v1'
 const ONE_YEAR_SECONDS = 60 * 60 * 24 * 365
 
 /** Footer dispatches this to let someone change their mind. */
-export const REOPEN_EVENT = 'trezuz:open-cookie-settings'
+export const REOPEN_EVENT = 'easim:open-cookie-settings'
 
 type Consent = { analytics: boolean }
 
