@@ -4,6 +4,9 @@ import { NextResponse, type NextRequest } from 'next/server'
 /**
  * Session refresh, and redirects for convenience.
  *
+ * Next 16 renamed this file convention from `middleware` to `proxy`. The
+ * behaviour is unchanged.
+ *
  * Two jobs, and it is worth being precise about the second one:
  *
  * 1. Supabase access tokens are short-lived. This refreshes them on each
@@ -17,10 +20,13 @@ import { NextResponse, type NextRequest } from 'next/server'
  * security underneath both. If this file were deleted tomorrow, nothing would
  * become readable that is not readable now — the experience would just get
  * worse.
+ *
+ * Doubly true under the new name: this is deployed to the CDN edge, which is
+ * the wrong place to make a decision that matters.
  */
 const PRIVATE_PREFIXES = ['/account', '/checkout', '/admin', '/orders']
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request })
 
   const supabase = createServerClient(
