@@ -6,7 +6,7 @@ import type { PaymentScenario } from '@easim/mock-provider'
  * Stands in for the card fields a real checkout would have.
  *
  * The brief forbids real card data anywhere on the site, including a mock
- * checkout — so there is no card number, expiry or security code field in this
+ * checkout - so there is no card number, expiry or security code field in this
  * codebase at all. What a reviewer needs instead is a way to choose which
  * outcome the payment provider will deliver, which is what this is.
  */

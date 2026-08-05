@@ -6,7 +6,7 @@ import { useCart } from '@/lib/cart/cart-context'
 /**
  * Empties the cart once, after an order has just been placed.
  *
- * The cart lives in localStorage, which only the browser can clear — the
+ * The cart lives in localStorage, which only the browser can clear - the
  * server action that created the order cannot reach it. So the checkout
  * redirect carries `?placed=1` and this clears the cart when it sees it.
  *

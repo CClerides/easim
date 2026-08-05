@@ -5,7 +5,7 @@ import type { OrderStatus } from '@/lib/orders/status'
  *
  * Colours come from the semantic tokens rather than being chosen per screen,
  * so `fulfilled` is the same green on the receipt, the account and the admin
- * table — and adding a status is one entry here instead of three.
+ * table - and adding a status is one entry here instead of three.
  */
 const TONES: Record<OrderStatus, string> = {
   created: 'border-border text-muted',

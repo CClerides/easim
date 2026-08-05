@@ -3,7 +3,7 @@ import { getActivePlans, getAvailability } from '@/lib/plans'
 import { PlanCard } from '@/components/commerce/plan-card'
 
 export const metadata: Metadata = {
-  title: 'Plans — Easim',
+  title: 'Plans - Easim',
   description: 'Prepaid eSIM data plans by country and duration.',
 }
 
@@ -23,7 +23,7 @@ export default async function PlansPage() {
         <h1 className="text-4xl font-semibold tracking-tight">Data plans</h1>
         <p className="mt-4 text-muted">
           Pick a destination. Pay. The QR code lands in your account within
-          seconds — no shop, no SIM card, no waiting.
+          seconds - no shop, no SIM card, no waiting.
         </p>
       </header>
 

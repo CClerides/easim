@@ -13,7 +13,7 @@ export function Footer() {
     <footer className="mt-auto border-t border-border/70">
       <div className="mx-auto flex max-w-6xl flex-col gap-6 px-6 py-10 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-muted">
-          Easim — a technical assessment demonstration. No real payments,
+          Easim - a technical assessment demonstration. No real payments,
           no real eSIM profiles.
         </p>
 

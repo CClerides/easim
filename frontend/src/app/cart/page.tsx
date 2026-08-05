@@ -2,14 +2,14 @@ import type { Metadata } from 'next'
 import { getActivePlans } from '@/lib/plans'
 import { CartContents } from '@/components/commerce/cart-contents'
 
-export const metadata: Metadata = { title: 'Cart — Easim' }
+export const metadata: Metadata = { title: 'Cart - Easim' }
 
 /**
  * Server Component that loads the catalogue, then hands it to a client
  * component which knows what is in the cart.
  *
  * The split is the point: the cart itself only ever existed in the browser,
- * so the server cannot render its contents — but it can supply the plan data
+ * so the server cannot render its contents - but it can supply the plan data
  * the browser needs to describe them, without a second round trip.
  */
 export default async function CartPage() {

@@ -10,7 +10,7 @@ import { ClearCartOnOrder } from '@/components/commerce/clear-cart-on-order'
 import { OrderStatusWatcher } from '@/components/commerce/order-status'
 import { EsimCredential } from '@/components/commerce/esim-credential'
 
-export const metadata: Metadata = { title: 'Your order — Easim' }
+export const metadata: Metadata = { title: 'Your order - Easim' }
 
 type OrderRow = {
   id: string
@@ -34,7 +34,7 @@ type OrderRow = {
 /**
  * The receipt, and where a customer watches their eSIM arrive.
  *
- * Dynamic on every request — an order's status is the least cacheable thing in
+ * Dynamic on every request - an order's status is the least cacheable thing in
  * the application.
  *
  * There is no `where user_id = ...` anywhere below. The query runs as the
@@ -63,7 +63,7 @@ export default async function OrderPage({ params, searchParams }: PageProps<'/or
 
   const order = data as unknown as OrderRow
 
-  // Reading is what advances an order here — there is no scheduler. An order
+  // Reading is what advances an order here - there is no scheduler. An order
   // past its payment deadline becomes payment_timeout now; a failed fulfilment
   // whose backoff has elapsed is retried now.
   const status = await reconcileOrder({

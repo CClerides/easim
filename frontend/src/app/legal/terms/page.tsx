@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 
-export const metadata: Metadata = { title: 'Terms of service — Easim' }
+export const metadata: Metadata = { title: 'Terms of service - Easim' }
 
 export default function TermsPage() {
   return (
@@ -29,7 +29,7 @@ export default function TermsPage() {
       <h2>3. Orders and payment</h2>
       <p>
         An order is placed when you complete checkout. It is confirmed only when
-        our payment provider tells us the payment succeeded — not when your browser
+        our payment provider tells us the payment succeeded - not when your browser
         finishes loading a page. Until that confirmation arrives, your order is
         pending and nothing has been delivered.
       </p>

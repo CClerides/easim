@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 
-export const metadata: Metadata = { title: 'Privacy — Easim' }
+export const metadata: Metadata = { title: 'Privacy - Easim' }
 
 export default function PrivacyPage() {
   return (
@@ -27,7 +27,7 @@ export default function PrivacyPage() {
       <h2>What we do not store</h2>
       <p>
         <strong>No card details of any kind.</strong> Not a number, not an expiry,
-        not a security code — no field on this site ever asks for one. Payment is
+        not a security code - no field on this site ever asks for one. Payment is
         handled by a separate service, and this deployment uses a mock one that
         takes no money at all.
       </p>
@@ -45,7 +45,7 @@ export default function PrivacyPage() {
         </li>
         <li>
           <strong>Analytics.</strong> Off unless you turn them on. If you decline,
-          the analytics code is never loaded at all — it is not merely hidden.
+          the analytics code is never loaded at all - it is not merely hidden.
         </li>
       </ul>
       <p>

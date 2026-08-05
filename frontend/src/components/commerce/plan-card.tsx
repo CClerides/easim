@@ -2,7 +2,7 @@ import Link from 'next/link'
 import type { Plan } from '@/lib/plans'
 import { formatData, formatDuration, formatPrice } from '@/lib/format'
 
-/** Below this many left, say so — scarcity is real here, not a growth tactic. */
+/** Below this many left, say so - scarcity is real here, not a growth tactic. */
 const LOW_STOCK_THRESHOLD = 3
 
 export function PlanCard({ plan, available }: { plan: Plan; available: number | undefined }) {

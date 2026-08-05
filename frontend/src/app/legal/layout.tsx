@@ -9,7 +9,7 @@ const PAGES = [
 
 /**
  * Shared shell for the four legal pages, so each page file holds only its own
- * words. All four are static — nothing here depends on who is looking.
+ * words. All four are static - nothing here depends on who is looking.
  */
 export default function LegalLayout({ children }: LayoutProps<'/legal'>) {
   return (

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 
-export const metadata: Metadata = { title: 'Contact — Easim' }
+export const metadata: Metadata = { title: 'Contact - Easim' }
 
 export default function ContactPage() {
   return (
@@ -13,8 +13,8 @@ export default function ContactPage() {
         <a href="mailto:support@easim.dev" className="underline underline-offset-4">
           support@easim.dev
         </a>
-        . Include your order reference — it is the identifier at the top of your
-        receipt — and we will answer within two working days.
+        . Include your order reference - it is the identifier at the top of your
+        receipt - and we will answer within two working days.
       </p>
 
       <h2>Before you write</h2>
