@@ -1,6 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
 import { z } from 'zod'
 import { requireAdmin } from '@/lib/auth'
 import { createAdminClient } from '@/lib/supabase/admin'
@@ -79,19 +80,13 @@ export async function retryFulfilment(
     action: 'retry_fulfilment',
   })
 
+  let outcome: Awaited<ReturnType<typeof fulfilOrder>>
+
   try {
     // A manual retry models the outage being over. Automatic retries replay
     // the original scenario, which is why a provider_failure order genuinely
     // exhausts its three attempts before reaching a human.
-    const outcome = await fulfilOrder(orderId, { assumeProviderRecovered: true })
-    revalidatePath('/admin')
-
-    return outcome.status === 'fulfilled'
-      ? { tone: 'success', message: 'Delivered. The customer has their eSIM.' }
-      : {
-          tone: 'error',
-          message: `Still failing: ${outcome.lastError ?? 'unknown error'}. The order is safe and can be retried again.`,
-        }
+    outcome = await fulfilOrder(orderId, { assumeProviderRecovered: true })
   } catch (error) {
     revalidatePath('/admin')
     return {
@@ -99,4 +94,24 @@ export async function retryFulfilment(
       message: `Retry failed: ${error instanceof Error ? error.message : 'unknown error'}`,
     }
   }
+
+  revalidatePath('/admin')
+
+  if (outcome.status !== 'fulfilled') {
+    // The row is still in the list, so returning the message is enough — it
+    // renders under the button the admin just pressed.
+    return {
+      tone: 'error',
+      message: `Still failing: ${outcome.lastError ?? 'unknown error'}. The order is safe and can be retried again.`,
+    }
+  }
+
+  // On success the order leaves the "needs attention" list, which unmounts this
+  // form and takes any message it was holding with it — the admin would click
+  // Retry and be told nothing at all. Redirect with the result instead, and let
+  // the page render a banner that outlives the row.
+  //
+  // Outside the try/catch on purpose: redirect() signals by throwing, and
+  // catching it here would swallow the navigation.
+  redirect(`/admin?retried=${orderId}`)
 }

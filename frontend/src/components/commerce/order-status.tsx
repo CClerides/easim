@@ -124,6 +124,21 @@ function StatusTimeline({ status }: { status: OrderStatus }) {
         })}
       </ol>
 
+      {status === 'awaiting_payment' ? (
+        <p className="mt-6 rounded-lg border border-border p-4 text-sm text-muted">
+          Waiting for the payment provider to confirm. That confirmation reaches
+          us directly rather than through your browser, so you can safely leave
+          this page — this order will finish without you.
+        </p>
+      ) : null}
+
+      {status === 'paid' || status === 'fulfilling' ? (
+        <p className="mt-6 rounded-lg border border-border p-4 text-sm text-muted">
+          Payment confirmed. Issuing your eSIM now — this usually takes a couple
+          of seconds.
+        </p>
+      ) : null}
+
       {stuck ? (
         <p className="mt-6 rounded-lg border border-warning/40 bg-warning/5 p-4 text-sm text-warning">
           Your payment went through. We could not issue the eSIM yet and are

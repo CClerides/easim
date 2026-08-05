@@ -29,11 +29,45 @@ const schema = z.object({
 export type Env = z.infer<typeof schema>
 
 /**
+ * Works out this deployment's own origin.
+ *
+ * You cannot know your production URL before the first deploy, so requiring
+ * APP_BASE_URL by hand makes the first deploy fail for a reason nobody
+ * enjoys diagnosing. Vercel injects its own hostname, so derive from that and
+ * let an explicit value win when there is one — a custom domain, or localhost
+ * in development.
+ */
+function resolveOrigin(source: Record<string, unknown>): string | undefined {
+  const explicit = source.APP_BASE_URL
+  if (typeof explicit === 'string' && explicit.length > 0) return explicit
+
+  // Set by Vercel. The production one is stable across deployments; VERCEL_URL
+  // changes per deployment and is the fallback for previews.
+  const vercelHost =
+    source.VERCEL_PROJECT_PRODUCTION_URL ?? source.VERCEL_URL
+
+  return typeof vercelHost === 'string' && vercelHost.length > 0
+    ? `https://${vercelHost}`
+    : undefined
+}
+
+/**
  * Takes the source object instead of reading `process.env` directly, so tests
  * can feed it a broken environment without mutating the real one.
  */
 export function parseEnv(source: Record<string, unknown>): Env {
-  const result = schema.safeParse(source)
+  const origin = resolveOrigin(source)
+
+  const withDefaults = {
+    ...source,
+    APP_BASE_URL: origin,
+    // The mock provider is mounted inside this app, so it lives at this
+    // origin unless it has been split out to its own deployment.
+    PROVIDER_BASE_URL:
+      source.PROVIDER_BASE_URL || (origin ? `${origin}/api/mock-provider` : undefined),
+  }
+
+  const result = schema.safeParse(withDefaults)
   if (!result.success) {
     const detail = result.error.issues
       .map((issue) => `${issue.path.join('.')}: ${issue.message}`)
