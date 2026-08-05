@@ -62,3 +62,36 @@ create trigger on_auth_user_created
   after insert on auth.users
   for each row
   execute function handle_new_user();
+
+-- Public stock counts, without exposing a single credential.
+--
+-- The esim_profiles RLS policy deliberately only lets you read a profile that
+-- was sold to you, so a plain count(*) from the browser returns zero. But the
+-- *number* remaining is public information — a shop shows "3 left" — while the
+-- ICCID and activation code never are.
+--
+-- security definer runs this as the owner, so it sees the whole pool, and it
+-- returns only aggregates. There is no column here that could leak a
+-- credential even if the function were called by an anonymous visitor.
+create or replace function plan_availability()
+returns table (plan_id uuid, available_count bigint)
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select plan_id, count(*)
+  from esim_profiles
+  where status = 'available'
+  group by plan_id;
+$$;
+
+grant execute on function plan_availability() to anon, authenticated;
+
+-- Realtime for the order status page.
+--
+-- Lets the browser subscribe to changes on its own order row and watch it move
+-- paid -> fulfilling -> fulfilled without polling. Row level security still
+-- applies to the subscription, so a customer only ever receives events for
+-- orders they can already read.
+alter publication supabase_realtime add table orders;
