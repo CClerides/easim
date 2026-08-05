@@ -18,7 +18,7 @@ export async function Header() {
         </Link>
 
         {/* Tight on a narrow phone, comfortable once there is room. Every item
-            stays on one line — a wrapped "Sign out" reads as a bug. */}
+            stays on one line - a wrapped "Sign out" reads as a bug. */}
         <nav className="flex items-center gap-3.5 text-xs whitespace-nowrap sm:gap-6 sm:text-sm">
           <Link href="/plans" className="text-muted transition-colors hover:text-foreground">
             Plans

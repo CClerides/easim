@@ -8,7 +8,7 @@ import { reconcileOrders } from '@/lib/orders/reconcile'
 import { OrderStatusBadge } from '@/components/commerce/order-status-badge'
 import { RetryButton } from './retry-button'
 
-export const metadata: Metadata = { title: 'Admin — Easim' }
+export const metadata: Metadata = { title: 'Admin - Easim' }
 
 type AdminOrder = {
   id: string
@@ -56,7 +56,7 @@ const FILTERS = [
  * a list of a thousand healthy orders buries the one that is broken.
  *
  * Admin sees every order because `is_admin()` widens the row level security
- * policies (db/migrations/0002_rls.sql) — not because this page uses a key
+ * policies (db/migrations/0002_rls.sql) - not because this page uses a key
  * that bypasses them.
  */
 export default async function AdminPage({ searchParams }: PageProps<'/admin'>) {
@@ -80,7 +80,7 @@ export default async function AdminPage({ searchParams }: PageProps<'/admin'>) {
     .limit(100)
 
   // Surfaced rather than swallowed. An earlier version ignored this, and a
-  // rejected query rendered as "no orders yet" — a broken page that looked
+  // rejected query rendered as "no orders yet" - a broken page that looked
   // like a quiet one, which is the worst way for an operations view to fail.
   if (error) {
     throw new Error(`Could not load orders: ${error.message}`)

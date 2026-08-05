@@ -3,7 +3,7 @@ import { requireUser } from '@/lib/auth'
 import { getActivePlans } from '@/lib/plans'
 import { CheckoutForm } from './checkout-form'
 
-export const metadata: Metadata = { title: 'Checkout — Easim' }
+export const metadata: Metadata = { title: 'Checkout - Easim' }
 
 export default async function CheckoutPage() {
   // The authorisation boundary. Middleware also redirects here, but this is

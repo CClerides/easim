@@ -84,7 +84,7 @@ export function CookieBanner() {
               <p className="font-medium">Cookies</p>
               <p className="opacity-80">
                 Strictly necessary cookies keep you signed in and remember this
-                choice. Analytics are optional — decline and the analytics script
+                choice. Analytics are optional - decline and the analytics script
                 is never loaded.{' '}
                 <a href="/legal/privacy" className="underline underline-offset-4">
                   Details

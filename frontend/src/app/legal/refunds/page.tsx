@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 
-export const metadata: Metadata = { title: 'Refund policy — Easim' }
+export const metadata: Metadata = { title: 'Refund policy - Easim' }
 
 export default function RefundsPage() {
   return (
@@ -31,7 +31,7 @@ export default function RefundsPage() {
         <li>
           <strong>Paid, but we could not deliver.</strong> If delivery fails and
           cannot be recovered, the order is refunded in full. Your order stays
-          visible in your account in the meantime — it is never discarded.
+          visible in your account in the meantime - it is never discarded.
         </li>
         <li>
           <strong>Plan out of stock after payment.</strong> Same as above: full

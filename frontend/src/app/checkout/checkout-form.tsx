@@ -118,7 +118,7 @@ function PlaceOrderButton({ total }: { total: string }) {
       disabled={pending}
       className="w-full rounded-lg bg-accent px-6 py-3.5 font-medium text-background transition-colors hover:bg-accent-strong disabled:opacity-60"
     >
-      {pending ? 'Placing your order…' : `Place order — ${total}`}
+      {pending ? 'Placing your order…' : `Place order - ${total}`}
     </button>
   )
 }

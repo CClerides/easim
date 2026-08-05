@@ -8,7 +8,7 @@ import { reconcileOrders } from '@/lib/orders/reconcile'
 import { EsimCredential } from '@/components/commerce/esim-credential'
 import { OrderStatusBadge } from '@/components/commerce/order-status-badge'
 
-export const metadata: Metadata = { title: 'Your account — Easim' }
+export const metadata: Metadata = { title: 'Your account - Easim' }
 
 type AccountOrder = {
   id: string
@@ -32,7 +32,7 @@ type AccountOrder = {
  *
  * Two sections: the eSIMs they can actually use, and the history behind them.
  *
- * Worth noticing what is missing from the query — there is no filter by user.
+ * Worth noticing what is missing from the query - there is no filter by user.
  * The client runs as the signed-in person and row level security returns only
  * their rows. Isolation is enforced by the database rather than by a condition
  * in application code that a future edit could drop.

@@ -5,7 +5,7 @@ import { useCart } from '@/lib/cart/cart-context'
 
 /**
  * The cart link, with a count. Its own client component so the header can
- * stay a Server Component — only the number needs the browser.
+ * stay a Server Component - only the number needs the browser.
  */
 export function CartLink() {
   const { count, ready } = useCart()

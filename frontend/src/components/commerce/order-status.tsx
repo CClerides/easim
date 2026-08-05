@@ -10,10 +10,10 @@ import { isTerminal, type OrderStatus } from '@/lib/orders/status'
  *
  * Two mechanisms, deliberately:
  *
- *   Realtime  — Supabase pushes the row change the instant it happens. Row
+ *   Realtime  - Supabase pushes the row change the instant it happens. Row
  *               level security applies to the subscription too, so a customer
  *               can only ever receive events for an order they may read.
- *   Polling   — a fallback every four seconds. A websocket can fail for
+ *   Polling   - a fallback every four seconds. A websocket can fail for
  *               reasons that have nothing to do with us: a proxy, a captive
  *               portal, a phone waking from sleep. Without this, a customer
  *               whose socket died watches "awaiting payment" forever while
@@ -128,13 +128,13 @@ function StatusTimeline({ status }: { status: OrderStatus }) {
         <p className="mt-6 rounded-lg border border-border p-4 text-sm text-muted">
           Waiting for the payment provider to confirm. That confirmation reaches
           us directly rather than through your browser, so you can safely leave
-          this page — this order will finish without you.
+          this page - this order will finish without you.
         </p>
       ) : null}
 
       {status === 'paid' || status === 'fulfilling' ? (
         <p className="mt-6 rounded-lg border border-border p-4 text-sm text-muted">
-          Payment confirmed. Issuing your eSIM now — this usually takes a couple
+          Payment confirmed. Issuing your eSIM now - this usually takes a couple
           of seconds.
         </p>
       ) : null}
@@ -142,7 +142,7 @@ function StatusTimeline({ status }: { status: OrderStatus }) {
       {stuck ? (
         <p className="mt-6 rounded-lg border border-warning/40 bg-warning/5 p-4 text-sm text-warning">
           Your payment went through. We could not issue the eSIM yet and are
-          retrying — your order is safe and you do not need to do anything.
+          retrying - your order is safe and you do not need to do anything.
         </p>
       ) : null}
 

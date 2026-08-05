@@ -4,7 +4,7 @@ import { getUser } from '@/lib/auth'
 import { LoginForm } from './login-form'
 import { signInAsDemoAdmin, signInAsDemoCustomer } from './actions'
 
-export const metadata: Metadata = { title: 'Sign in — Easim' }
+export const metadata: Metadata = { title: 'Sign in - Easim' }
 
 export default async function LoginPage() {
   // Already signed in? Nothing to do here.

@@ -22,7 +22,7 @@ export async function EsimCredential({
     width: 320,
     // Deliberately black on white regardless of the dark theme around it.
     // Scanners need the contrast, and an inverted QR is a QR that does not
-    // work — a beautiful, unusable card.
+    // work - a beautiful, unusable card.
     color: { dark: '#000000', light: '#ffffff' },
   })
 
