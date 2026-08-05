@@ -1,0 +1,10 @@
+node_modules/
+.DS_Store
+
+# Real secrets. `.env.example` holds placeholders and is committed on purpose.
+.env
+.env.local
+.env*.local
+
+.vercel
+*.tsbuildinfo

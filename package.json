@@ -1,0 +1,11 @@
+{
+  "name": "trezuz",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter frontend dev",
+    "build": "pnpm --filter frontend build",
+    "lint": "pnpm --filter frontend lint",
+    "test": "pnpm --filter frontend test",
+    "e2e": "pnpm --filter frontend exec playwright test"
+  }
+}
