@@ -3,8 +3,8 @@ import { parseEnv } from './env'
 
 const valid = {
   NEXT_PUBLIC_SUPABASE_URL: 'https://abc.supabase.co',
-  NEXT_PUBLIC_SUPABASE_ANON_KEY: 'anon-key',
-  SUPABASE_SERVICE_ROLE_KEY: 'service-key',
+  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_test',
+  SUPABASE_SECRET_KEY: 'sb_secret_test',
   PROVIDER_BASE_URL: 'http://localhost:3000/api/mock-provider',
   PROVIDER_HMAC_SECRET: 'a-secret-at-least-16-chars',
   APP_BASE_URL: 'http://localhost:3000',
@@ -18,8 +18,8 @@ describe('parseEnv', () => {
   })
 
   it('throws naming the variable when a required one is missing', () => {
-    const { SUPABASE_SERVICE_ROLE_KEY: _omitted, ...missing } = valid
-    expect(() => parseEnv(missing)).toThrow(/SUPABASE_SERVICE_ROLE_KEY/)
+    const { SUPABASE_SECRET_KEY: _omitted, ...missing } = valid
+    expect(() => parseEnv(missing)).toThrow(/SUPABASE_SECRET_KEY/)
   })
 
   it('rejects an HMAC secret too short to be safe', () => {
