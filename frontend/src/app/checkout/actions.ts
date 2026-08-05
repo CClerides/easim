@@ -73,9 +73,12 @@ export async function placeOrder(
     }
   }
 
+  // `placed=1` tells the receipt page to empty the cart. The cart lives in
+  // localStorage, which no server action can reach.
+  //
   // Outside the try/catch: redirect() works by throwing, so catching around it
   // would swallow the navigation.
-  redirect(`/orders/${created.orderId}`)
+  redirect(`/orders/${created.orderId}?placed=1`)
 }
 
 /**

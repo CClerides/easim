@@ -21,5 +21,12 @@ export default defineConfig(({ mode }) => ({
     environment: 'node',
     env: loadEnv(mode, here, ''),
     exclude: ['e2e/**', 'node_modules/**'],
+    // Several suites are integration tests against one shared Supabase
+    // project, and they claim eSIMs from the same finite pool. Running files
+    // in parallel makes them interfere with each other's stock, which shows
+    // up as failures that have nothing to do with the code under test.
+    fileParallelism: false,
+    // The webhook suite waits on asynchronous fulfilment over real HTTP.
+    testTimeout: 30_000,
   },
 }))
