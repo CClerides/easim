@@ -38,7 +38,7 @@ export function CheckoutForm({ plans, email }: { plans: Plan[]; email: string })
         <h2 className="font-medium">There is nothing to check out</h2>
         <Link
           href="/plans"
-          className="mt-6 inline-block rounded-lg bg-accent px-5 py-2.5 text-sm font-medium text-background transition-colors hover:bg-accent-strong"
+          className="btn btn-primary mt-6 px-5 py-2.5"
         >
           Browse plans
         </Link>
@@ -116,7 +116,7 @@ function PlaceOrderButton({ total }: { total: string }) {
     <button
       type="submit"
       disabled={pending}
-      className="w-full rounded-lg bg-accent px-6 py-3.5 font-medium text-background transition-colors hover:bg-accent-strong disabled:opacity-60"
+      className="btn btn-primary w-full px-6 py-3.5 text-base"
     >
       {pending ? 'Placing your order…' : `Place order - ${total}`}
     </button>

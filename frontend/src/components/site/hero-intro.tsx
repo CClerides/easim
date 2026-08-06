@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from 'motion/react'
 import type { ReactNode } from 'react'
+import { spring } from '@/lib/motion'
 
 /**
  * The hero's arrival.
@@ -40,9 +41,5 @@ export function HeroIntro({ children }: { children: ReactNode }) {
 
 const itemVariants = {
   hidden: { opacity: 0, y: 16 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const },
-  },
+  visible: { opacity: 1, y: 0, transition: spring },
 }

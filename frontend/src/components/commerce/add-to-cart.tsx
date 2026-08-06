@@ -13,7 +13,7 @@ export function AddToCart({ planId, soldOut }: { planId: string; soldOut: boolea
       <button
         type="button"
         disabled
-        className="mt-5 w-full cursor-not-allowed rounded-lg border border-border px-5 py-3 text-sm text-muted"
+        className="btn btn-secondary mt-5 w-full px-5 py-3"
       >
         Sold out
       </button>
@@ -28,7 +28,7 @@ export function AddToCart({ planId, soldOut }: { planId: string; soldOut: boolea
           add(planId)
           setAdded(true)
         }}
-        className="w-full rounded-lg bg-accent px-5 py-3 text-sm font-medium text-background transition-colors hover:bg-accent-strong"
+        className="btn btn-primary w-full px-5 py-3"
       >
         Add to cart
       </button>
