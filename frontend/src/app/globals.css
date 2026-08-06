@@ -153,6 +153,44 @@ body {
 }
 
 /*
+ * Section snapping.
+ *
+ * One small scroll should carry you to the next section rather than leaving
+ * you stranded between two. That needs `mandatory`: proximity only pulls when
+ * you happen to stop near a boundary, so a short scroll falls back where it
+ * started. `scroll-snap-stop: always` then stops a fast flick skipping a
+ * section entirely.
+ *
+ * Mandatory has one real hazard: a section taller than the viewport becomes
+ * partly unreachable, because the scroll is dragged back to a snap point past
+ * the content you were reading. An earlier attempt did exactly that and pinned
+ * the page at 64px of a possible 2790 with the footer unreachable.
+ *
+ * Two rules keep that from happening, and both are load-bearing:
+ *
+ *   Every top-level section on the page carries a snap point. Skipping one
+ *   makes everything inside it unreachable.
+ *
+ *   Snapping is switched off below 820px of viewport height. On a short
+ *   window the sections no longer fit, and the hazard returns. A laptop in
+ *   landscape gets the choreography; a small window gets an ordinary page,
+ *   which is the right trade.
+ *
+ * Scoped to a class so only the landing page behaves this way. Snapping
+ * through a checkout would be hostile.
+ */
+@media (min-height: 820px) and (prefers-reduced-motion: no-preference) {
+  .snap-sections {
+    scroll-snap-type: y mandatory;
+  }
+
+  .snap-sections .snap-section {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+}
+
+/*
  * Buttons.
  *
  * Defined once here rather than repeated as utility strings, because the
