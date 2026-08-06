@@ -20,9 +20,9 @@ export async function EsimCredential({
     errorCorrectionLevel: 'M',
     margin: 2,
     width: 320,
-    // Deliberately black on white regardless of the dark theme around it.
-    // Scanners need the contrast, and an inverted QR is a QR that does not
-    // work - a beautiful, unusable card.
+    // Fixed black on white, never themed. Scanners need the contrast, and an
+    // inverted QR is a QR that does not work - a beautiful, unusable card.
+    // The white plate it sits on below is the quiet zone, for the same reason.
     color: { dark: '#000000', light: '#ffffff' },
   })
 

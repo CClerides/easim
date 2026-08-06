@@ -3,62 +3,65 @@
 /**
  * Design tokens.
  *
- * Direction: dark cinematic infrastructure. A deep neutral ground, one accent,
+ * Direction: light editorial product. Near-white ground, ink type, one accent,
  * and status colours mapped to order states so a badge never picks its own.
- * Components reference these names and never raw hex.
+ * Components reference these names and never raw hex, which is why flipping
+ * the whole site from dark to light is this file rather than a rewrite.
  *
- * Dark only, deliberately. A shop that is dark on one machine and light on
- * another is two designs to get right, and the point of the direction is a
- * single committed look.
+ * Light only, deliberately. A shop that is light on one machine and dark on
+ * another is two designs to get right, and the point of a committed direction
+ * is that it is committed.
  *
- * On the accent: electric blue is the obvious choice for connectivity, and it
- * is kept for two concrete reasons rather than habit. First, the three status
- * colours already occupy green, amber and red, so the accent has to sit
- * outside them or a "delivered" badge and a "buy" button start competing.
- * Second, it has to survive next to a stark black-and-white QR code without
- * fighting it. It is desaturated from the default screaming blue for that
- * reason.
+ * On the accent: near-black is the primary action, the way it is on most
+ * considered product pages, and blue is reserved for links and live state.
+ * That split matters here because the three status colours already occupy
+ * green, amber and red - if the buy button were also coloured, a "delivered"
+ * badge and a "buy" button would compete for the same attention.
  */
 :root {
-  /* Ground. Never pure black - it kills depth and makes shadows impossible. */
-  --background: #08090c;
-  --surface: #0e1015;
-  --surface-raised: #151821;
+  /* Ground. Never pure white - it flattens shadows and glares. */
+  --background: #ffffff;
+  --surface: #f6f7f9;
+  --surface-raised: #ffffff;
+
   /*
    * Two border weights, and the difference is accessibility rather than taste.
    *
-   * --border draws hairlines and container edges. Those are decoration, and
-   * WCAG does not require contrast from them.
+   * --border draws hairlines and container edges, which WCAG does not require
+   * contrast from.
    *
    * --border-strong outlines controls whose only visible affordance IS the
-   * border, like the secondary button in the hero. WCAG 1.4.11 wants 3:1 for
-   * that, and the original value managed 1.72:1 - a button whose edge some
-   * people simply would not see. This value clears 3:1 against both the page
-   * and raised surfaces.
+   * border, where 1.4.11 wants 3:1. Both were re-derived for the light ground
+   * rather than inverted by eye - the first attempt at inverting managed
+   * 2.60:1 here, and the accent failed 4.5:1 against the raised surface. An
+   * audit caught both; neither was visible to the naked eye.
    */
-  --border: #23272f;
-  --border-strong: #5b6374;
+  --border: #e5e7eb;
+  --border-strong: #828a96;
 
-  --foreground: #f2f4f7;
-  --muted: #99a0ad;
-  --muted-strong: #c2c8d2;
+  --foreground: #101318;
+  --muted: #5f6672;
+  --muted-strong: #3d434e;
 
-  --accent: #4a86f7;
-  --accent-strong: #7aa9ff;
-  --accent-quiet: #1b2942;
+  --accent: #1a5fd0;
+  --accent-strong: #12489f;
+  --accent-quiet: #eaf1fe;
 
-  /* Order states. Semantic, not decorative. */
-  --success: #3fbf8f;
-  --warning: #e0a33c;
-  --danger: #f2616b;
+  /* The primary action. Ink, not colour - see the note above. */
+  --ink: #14171c;
+  --ink-strong: #000000;
+
+  /* Order states, re-derived for a light ground so each clears AA on paper. */
+  --success: #0f7a4f;
+  --warning: #8a5a00;
+  --danger: #b3261e;
 
   /*
-   * One radius scale, locked. Interactive elements are 8px, containers 12px,
-   * and nothing on this site is a pill. Mixing systems is what makes an
-   * interface feel assembled rather than designed.
+   * One radius scale, locked. Controls are pill, containers are 16px. Mixing
+   * systems is what makes an interface feel assembled rather than designed.
    */
-  --radius-control: 0.5rem;
-  --radius-container: 0.75rem;
+  --radius-control: 999px;
+  --radius-container: 1rem;
 }
 
 @theme inline {
@@ -78,6 +81,8 @@
   --color-success: var(--success);
   --color-warning: var(--warning);
   --color-danger: var(--danger);
+  --color-ink: var(--ink);
+  --color-ink-strong: var(--ink-strong);
 
   --radius-control: var(--radius-control);
   --radius-container: var(--radius-container);
@@ -166,12 +171,15 @@ body {
  * That is what makes an unmodified third-party component sit correctly in a
  * codebase whose theme is the opposite of the one it was designed for.
  */
+/*
+ * Kept as a no-op scope.
+ *
+ * The published map card is written against shadcn's light tokens, which are
+ * now simply the page's tokens. The class stays so the component keeps a
+ * single, named place to be re-scoped if the theme ever moves again.
+ */
 .card-surface {
-  --background: #ffffff;
-  --surface: #f4f5f7;
-  --border: #e3e6ec;
-  --foreground: #14161c;
-  --muted: #6b7280;
+  --surface: #f6f7f9;
 }
 
 /*
@@ -243,12 +251,12 @@ body {
 }
 
 .btn-primary {
-  background: var(--accent);
-  color: var(--background);
+  background: var(--ink);
+  color: #ffffff;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: var(--accent-strong);
+  background: var(--ink-strong);
 }
 
 .btn-secondary {

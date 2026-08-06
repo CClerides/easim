@@ -24,9 +24,11 @@ export function CoverageMap({ plans }: { plans: Plan[] }) {
 
   const svgMap = map.getSVG({
     radius: 0.22,
-    // Dots matched to the page's border token rather than a flat grey, so the
+    // Matched to the page's border token rather than a flat grey, so the
     // landmass reads as part of the interface instead of a pasted-in graphic.
-    color: '#2b303a',
+    // Re-derived for the light ground: the dark-theme value was invisible on
+    // white.
+    color: '#c9ced6',
     shape: 'circle',
     backgroundColor: 'transparent',
   })

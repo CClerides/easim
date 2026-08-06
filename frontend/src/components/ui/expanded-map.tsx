@@ -16,9 +16,10 @@ import { useEffect, useMemo, useRef, useState } from 'react'
  *
  * It expects shadcn's token names (`bg-background`, `text-muted-foreground`,
  * `border-border`). This project does not use shadcn, so those names are
- * aliased in globals.css, and the `.card-surface` wrapper redefines them with
- * light values - which is what makes the card read as paper against the dark
- * page, matching the component's own light default.
+ * aliased in globals.css. The component was written light, and the page is
+ * now light too, so `.card-surface` has almost nothing left to do - it stays
+ * as the scope those aliases resolve in rather than being deleted and
+ * re-derived the next time this component is dropped in somewhere darker.
  */
 
 interface LocationMapProps {
@@ -150,23 +151,33 @@ export function LocationMap({
     mouseX.set(0)
     mouseY.set(0)
     setIsHovered(false)
+    setIsExpanded(false)
   }
 
-  const handleClick = () => {
-    setIsExpanded(!isExpanded)
+  /**
+   * Hover opens the card; click is left free for the link that wraps it.
+   *
+   * The published component toggled on click, which on a product card would
+   * spend the one interaction that has to take you to the product. Only a
+   * real cursor opens it - on a touch screen there is no hover, so a tap
+   * follows the link instead of opening a map the visitor then has to
+   * dismiss.
+   */
+  const handlePointerEnter = (e: React.PointerEvent) => {
+    setIsHovered(true)
+    if (e.pointerType === 'mouse') setIsExpanded(true)
   }
 
   return (
     <motion.div
       ref={containerRef}
-      className={`card-surface relative cursor-pointer select-none ${className ?? ''}`}
+      className={`card-surface relative select-none ${className ?? ''}`}
       style={{
         perspective: 1000,
       }}
       onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovered(true)}
+      onPointerEnter={handlePointerEnter}
       onMouseLeave={handleMouseLeave}
-      onClick={handleClick}
     >
       <motion.div
         className="relative overflow-hidden rounded-2xl border border-border bg-background"
@@ -175,9 +186,11 @@ export function LocationMap({
           rotateY: springRotateY,
           transformStyle: 'preserve-3d',
         }}
+        // Larger than the published defaults because the landing page shows
+        // three of these rather than eight, so each one can carry its weight.
         animate={{
-          width: isExpanded ? 360 : 240,
-          height: isExpanded ? 280 : 140,
+          width: isExpanded ? 380 : 340,
+          height: isExpanded ? 380 : 210,
         }}
         transition={{
           type: 'spring',
