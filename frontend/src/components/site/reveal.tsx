@@ -2,20 +2,22 @@
 
 import { motion, useReducedMotion } from 'motion/react'
 import type { ReactNode } from 'react'
+import { spring } from '@/lib/motion'
 
 /**
  * Content that arrives as it enters the viewport.
  *
- * The motion here is doing one job: sequencing. On a page where the argument
- * builds (you buy, then it is confirmed, then it is delivered), letting items
- * land in order helps a reader follow the order. It is not decoration, and it
- * is not applied to everything.
+ * The motion is doing one job: sequencing. On a page where the argument builds
+ * (you buy, then it is confirmed, then it is delivered), letting items land in
+ * order helps a reader follow that order. It is not decoration and it is not
+ * applied to everything.
  *
  * `once: true` because a section that re-animates every time you scroll past
- * stops being sequencing and starts being noise.
+ * stops being sequencing and becomes noise.
  *
- * Under `prefers-reduced-motion` the content is simply present. Not faded in
- * faster, not shortened - present.
+ * The transition is a critically damped spring rather than a timed curve, so
+ * an element caught mid-arrival by a fast scroll settles from wherever it
+ * actually is instead of snapping back to a scripted keyframe.
  */
 export function Reveal({
   children,
@@ -38,7 +40,7 @@ export function Reveal({
       initial={reduce ? false : { opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.25 }}
-      transition={{ duration: 0.55, delay, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ ...spring, delay }}
     >
       {children}
     </motion.div>

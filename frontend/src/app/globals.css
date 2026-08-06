@@ -91,13 +91,54 @@ body {
 }
 
 /*
- * Sora runs slightly wide at display sizes, so headings get negative tracking
- * to stop them feeling loose. Applied here rather than repeated as a utility
- * on every heading.
+ * Tracking is size-specific, never one value for everything.
+ *
+ * Letters read as further apart the larger they get, so display type needs
+ * negative tracking while body type needs roughly none and small type needs a
+ * touch of positive. A single blanket `letter-spacing` is therefore wrong at
+ * some size by definition - it just picks which size to be wrong at.
+ *
+ * These are attached to the type scale rather than to the tags, so a heading
+ * rendered small does not inherit display tracking.
  */
-h1,
-h2 {
-  letter-spacing: -0.025em;
+:where(h1, h2, h3) {
+  text-wrap: balance;
+}
+
+.text-5xl,
+.text-6xl {
+  letter-spacing: -0.03em;
+  line-height: 1.03;
+}
+
+.text-3xl,
+.text-4xl {
+  letter-spacing: -0.02em;
+  line-height: 1.12;
+}
+
+.text-xl,
+.text-2xl {
+  letter-spacing: -0.011em;
+}
+
+/*
+ * Small uppercase runs need the opposite treatment. Capitals set tight are
+ * genuinely hard to read at this size, which is why the eyebrow and the badges
+ * open up rather than close in.
+ */
+.text-xs.uppercase,
+.text-\[11px\].uppercase {
+  letter-spacing: 0.14em;
+}
+
+/*
+ * Machine strings - ICCIDs, activation codes, order ids - get a hair of extra
+ * tracking. These are read character by character and sometimes transcribed,
+ * and the gap between glyphs is what makes that possible.
+ */
+.font-mono {
+  letter-spacing: 0.01em;
 }
 
 /*
@@ -109,6 +150,151 @@ h2 {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
   border-radius: 2px;
+}
+
+/*
+ * Buttons.
+ *
+ * Defined once here rather than repeated as utility strings, because the
+ * important part is not the colour - it is that the press state is identical
+ * everywhere and that it fires on pointer-down.
+ *
+ * `:active` in CSS applies the moment the pointer goes down, which is the
+ * behaviour we want: acknowledge the touch immediately, commit on release.
+ * Anything that waits for a click to give feedback feels dead, and the gap is
+ * perceptible even when it is only tens of milliseconds.
+ *
+ * The transform is 1px of travel and a 2% scale. Barely visible on its own,
+ * clearly felt in use.
+ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: var(--radius-control);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease,
+    transform 100ms ease-out;
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(1px) scale(0.985);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--background);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--accent-strong);
+}
+
+.btn-secondary {
+  border: 1px solid var(--border-strong);
+  color: var(--foreground);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/*
+ * Translucent chrome.
+ *
+ * The header is a floating material with content passing underneath, not an
+ * opaque strip that eats a band of the page. The bright top edge is the same
+ * trick a real material uses: light catches its leading edge.
+ */
+.material-chrome {
+  background: color-mix(in srgb, var(--background) 72%, transparent);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.04);
+}
+
+/*
+ * A thicker material for large surfaces.
+ *
+ * Material weight should track surface size: a slim navigation bar can be
+ * light and let content read through it, but a full-width sheet carrying text
+ * and two buttons cannot. At nav weight the content underneath bleeds into the
+ * copy and both become hard to read. More blur, more opacity, and a real
+ * shadow so it sits above the page rather than in it.
+ */
+.material-sheet {
+  background: color-mix(in srgb, var(--background) 94%, transparent);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.06),
+    0 -20px 60px rgb(0 0 0 / 0.5);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .material-sheet {
+    background: var(--background);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+/*
+ * A scroll edge instead of a hard divider. Where floating chrome overlaps
+ * content, the content fades out under it rather than being cut by a 1px line.
+ */
+.material-chrome::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  top: 100%;
+  height: 1.5rem;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--background) 60%, transparent),
+    transparent
+  );
+}
+
+/*
+ * Translucency is an effect, not a requirement. Asked for less of it, the
+ * material becomes solid rather than merely less blurred - a half-frosted
+ * panel is the worst of both.
+ */
+@media (prefers-reduced-transparency: reduce) {
+  .material-chrome {
+    background: var(--background);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .material-chrome::after {
+    display: none;
+  }
+}
+
+/*
+ * Asked for more contrast, borders stop being hints and become edges.
+ */
+@media (prefers-contrast: more) {
+  :root {
+    --border: #5b6374;
+    --border-strong: #8b93a3;
+    --muted: #c2c8d2;
+  }
 }
 
 /*

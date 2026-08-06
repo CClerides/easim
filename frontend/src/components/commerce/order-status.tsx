@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { motion, useReducedMotion } from 'motion/react'
 import { createClient } from '@/lib/supabase/browser'
+import { springArrival, springQuick } from '@/lib/motion'
 import { isTerminal, type OrderStatus } from '@/lib/orders/status'
 
 /**
@@ -87,6 +89,46 @@ const STEPS: { key: string; label: string; reached: (status: OrderStatus) => boo
   },
 ]
 
+/**
+ * The step marker.
+ *
+ * The tick is the payoff of this whole page, so it gets the one piece of
+ * bounce in the application. Everywhere else overshoot would look like a bug;
+ * here it reads as arrival. The marker itself settles on a critically damped
+ * spring, so the colour and the shape do not fight each other.
+ */
+function StepMarker({ done, active, index }: { done: boolean; active: boolean; index: number }) {
+  const reduce = useReducedMotion()
+
+  return (
+    <motion.span
+      aria-hidden
+      layout
+      transition={springQuick}
+      className={`grid size-6 shrink-0 place-items-center rounded-full border text-xs ${
+        done
+          ? 'border-success bg-success/15 text-success'
+          : active
+            ? 'border-accent text-accent'
+            : 'border-border text-muted'
+      }`}
+    >
+      {done ? (
+        <motion.span
+          key="done"
+          initial={reduce ? false : { scale: 0.4, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={reduce ? { duration: 0.15 } : springArrival}
+        >
+          ✓
+        </motion.span>
+      ) : (
+        <span>{index + 1}</span>
+      )}
+    </motion.span>
+  )
+}
+
 function StatusTimeline({ status }: { status: OrderStatus }) {
   const failed = ['payment_declined', 'payment_timeout', 'cancelled'].includes(status)
   const stuck = status === 'fulfilment_failed'
@@ -103,18 +145,7 @@ function StatusTimeline({ status }: { status: OrderStatus }) {
 
           return (
             <li key={step.key} className="flex items-center gap-3">
-              <span
-                aria-hidden
-                className={`grid size-6 shrink-0 place-items-center rounded-full border text-xs transition-colors ${
-                  done
-                    ? 'border-success bg-success/15 text-success'
-                    : active
-                      ? 'border-accent text-accent'
-                      : 'border-border text-muted'
-                }`}
-              >
-                {done ? '✓' : index + 1}
-              </span>
+              <StepMarker done={done} active={active} index={index} />
               <span className={done ? '' : active ? 'text-accent' : 'text-muted'}>
                 {step.label}
                 {active ? <span className="ml-2 text-sm text-muted">in progress…</span> : null}

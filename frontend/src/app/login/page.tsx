@@ -37,7 +37,7 @@ export default async function LoginPage() {
           <form action={signInAsDemoCustomer}>
             <button
               type="submit"
-              className="w-full rounded-lg bg-accent px-4 py-2.5 text-sm font-medium text-background transition-colors hover:bg-accent-strong"
+              className="btn btn-primary w-full px-4 py-2.5"
             >
               Sign in as customer
             </button>
@@ -46,7 +46,7 @@ export default async function LoginPage() {
           <form action={signInAsDemoAdmin}>
             <button
               type="submit"
-              className="w-full rounded-lg border border-border px-4 py-2.5 text-sm transition-colors hover:border-accent hover:text-accent"
+              className="btn btn-secondary w-full px-4 py-2.5"
             >
               Sign in as admin
             </button>

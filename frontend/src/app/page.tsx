@@ -75,13 +75,13 @@ export default async function HomePage() {
             <div className="mt-10 flex flex-wrap items-center gap-3">
               <Link
                 href="/plans"
-                className="rounded-control bg-accent px-6 py-3 text-sm font-medium text-background transition-colors hover:bg-accent-strong active:translate-y-px"
+                className="btn btn-primary px-6 py-3"
               >
                 Browse plans
               </Link>
               <Link
                 href="#delivery"
-                className="rounded-control border border-border-strong px-6 py-3 text-sm transition-colors hover:border-accent hover:text-accent"
+                className="btn btn-secondary px-6 py-3"
               >
                 How delivery works
               </Link>
@@ -153,7 +153,7 @@ export default async function HomePage() {
           </p>
           <Link
             href="/plans"
-            className="mt-8 inline-block rounded-control bg-accent px-6 py-3 text-sm font-medium text-background transition-colors hover:bg-accent-strong active:translate-y-px"
+            className="btn btn-primary mt-8 px-6 py-3"
           >
             Browse plans
           </Link>
