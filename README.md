@@ -9,7 +9,7 @@ timeout, a provider outage and stock exhaustion without ever losing an order.
 
 | | |
 |---|---|
-| **Live URL** | _set after deploy_ |
+| **Live URL** | **https://easim.vercel.app** |
 | **Repo** | https://github.com/CClerides/easim |
 | **Stack** | Next.js 16 (App Router) · TypeScript · Tailwind CSS 4 · Supabase (Postgres, Auth, RLS, Realtime) · Vercel |
 | **Tests** | 113 unit + integration (Vitest), 8 end-to-end (Playwright) |
