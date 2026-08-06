@@ -5,6 +5,8 @@ import { Reveal } from '@/components/site/reveal'
 import { HeroIntro } from '@/components/site/hero-intro'
 import { PinnedHero } from '@/components/site/pinned-hero'
 import { DestinationsGrid } from '@/components/site/destinations-grid'
+import { CoverageMap } from '@/components/site/coverage-map'
+import { SnapScope } from '@/components/site/snap-scope'
 
 /**
  * The delivery story, told as a sequence rather than as three equal cards.
@@ -31,6 +33,12 @@ const DELIVERY = [
   },
 ]
 
+/**
+ * Snapping has to live on the element that actually scrolls, which is the
+ * document, and a page cannot style <html>. This tiny client component adds
+ * the class on mount and removes it on navigation, so the behaviour is scoped
+ * to the landing page and a checkout never snaps.
+ */
 export default async function HomePage() {
   const [plans, availability] = await Promise.all([getActivePlans(), getAvailability()])
 
@@ -83,13 +91,23 @@ export default async function HomePage() {
 
   return (
     <>
+      <SnapScope />
+
       {/*
         The hero holds the full viewport and pins while the destinations arrive
         over it. Scroll position drives the handover, so it moves at the
         reader's pace rather than playing at them.
       */}
       <PinnedHero hero={hero}>
-        <section className="mx-auto w-full max-w-6xl px-6 pt-16 pb-24">
+        {/*
+          Exactly one viewport tall, so it is safe to snap to. The routes draw
+          themselves as it arrives.
+        */}
+        <section className="snap-section flex min-h-[100dvh] flex-col justify-center border-b border-border bg-background py-16">
+          <CoverageMap plans={plans} />
+        </section>
+
+        <section className="snap-section mx-auto w-full max-w-6xl px-6 pt-16 pb-24">
           <div className="mb-10 flex flex-wrap items-end justify-between gap-6">
             <h2 className="text-3xl font-semibold">Eight destinations</h2>
             <Link
@@ -108,7 +126,7 @@ export default async function HomePage() {
         A different layout family from the grid above: a sticky heading beside
         a sequence, separated by hairlines rather than boxed into cards.
       */}
-      <section id="delivery" className="scroll-mt-20 border-t border-border bg-surface/40">
+      <section id="delivery" className="snap-section scroll-mt-20 border-t border-border bg-surface/40">
         <div className="mx-auto grid max-w-6xl gap-12 px-6 py-24 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
           <div className="lg:sticky lg:top-28 lg:self-start">
             <h2 className="text-3xl font-semibold">What happens after you pay</h2>
@@ -137,7 +155,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="border-t border-border">
+      <section className="snap-section border-t border-border">
         <Reveal className="mx-auto max-w-2xl px-6 py-24 text-center">
           <h2 className="text-3xl font-semibold">Pick a destination</h2>
           <p className="mt-4 text-muted">
