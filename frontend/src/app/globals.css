@@ -1,6 +1,17 @@
 @import 'tailwindcss';
 
 /**
+ * `hoverable:` - only on a device with a real pointer.
+ *
+ * Tailwind's own `hover:` already gates on this, which is the problem it
+ * solves: a reveal built purely from `group-hover` simply never happens on a
+ * phone, leaving whatever it was hiding permanently off-screen. Naming the
+ * media query lets a component state its resting layout for touch and its
+ * hover layout separately, rather than assuming a mouse.
+ */
+@custom-variant hoverable (@media (hover: hover));
+
+/**
  * Design tokens.
  *
  * Direction: light editorial product. Near-white ground, ink type, one accent,
@@ -73,8 +84,15 @@
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
   --color-muted-strong: var(--muted-strong);
-  /* shadcn's name, aliased so third-party components work unmodified. */
+  /*
+   * shadcn's names, aliased so third-party components work unmodified.
+   * Components published on 21st.dev are written against shadcn's token set;
+   * mapping the names here is what lets them be dropped in without either
+   * adopting shadcn wholesale or rewriting every class they ship with.
+   */
   --color-muted-foreground: var(--muted);
+  --color-card: var(--surface-raised);
+  --color-card-foreground: var(--foreground);
   --color-accent: var(--accent);
   --color-accent-strong: var(--accent-strong);
   --color-accent-quiet: var(--accent-quiet);
@@ -157,29 +175,6 @@ body {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
   border-radius: 2px;
-}
-
-/*
- * A light surface, scoped.
- *
- * The 21st.dev map card is used exactly as published, and it is written
- * against shadcn's token names on a light theme. Rather than fork it, this
- * class redefines those variables locally with light values, so
- * `bg-background`, `text-foreground` and `border-border` resolve to paper
- * inside the card while the rest of the page stays dark.
- *
- * That is what makes an unmodified third-party component sit correctly in a
- * codebase whose theme is the opposite of the one it was designed for.
- */
-/*
- * Kept as a no-op scope.
- *
- * The published map card is written against shadcn's light tokens, which are
- * now simply the page's tokens. The class stays so the component keeps a
- * single, named place to be re-scoped if the theme ever moves again.
- */
-.card-surface {
-  --surface: #f6f7f9;
 }
 
 /*

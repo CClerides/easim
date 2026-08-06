@@ -1,6 +1,10 @@
 import type { Metadata } from 'next'
+import { Signal } from 'lucide-react'
 import { getActivePlans, getAvailability } from '@/lib/plans'
-import { PlanCard } from '@/components/commerce/plan-card'
+import { TravelCard } from '@/components/ui/card-7'
+import { StockBadge } from '@/components/commerce/stock-badge'
+import { destinationFor } from '@/lib/destinations'
+import { formatData, formatDuration, formatPrice } from '@/lib/format'
 
 export const metadata: Metadata = {
   title: 'Plans - Easim',
@@ -35,12 +39,35 @@ export default async function PlansPage() {
           </p>
         </div>
       ) : (
-        <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {plans.map((plan) => (
-            <li key={plan.id}>
-              <PlanCard plan={plan} available={availability.get(plan.id)} />
-            </li>
-          ))}
+        <ul className="mt-12 grid justify-items-center gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {plans.map((plan, index) => {
+            const destination = destinationFor(plan.slug)
+            const available = availability?.get(plan.id)
+
+            return (
+              <li key={plan.id} className="w-full max-w-sm">
+                <TravelCard
+                  className="aspect-square"
+                  imageUrl={destination.image}
+                  imageAlt={destination.imageAlt}
+                  logo={<Signal className="h-6 w-6 text-white/80" aria-hidden />}
+                  badge={<StockBadge available={available} />}
+                  title={plan.region}
+                  overview={destination.overview}
+                  price={formatPrice(plan.price_cents)}
+                  pricePeriod={`${formatData(plan.data_mb)} for ${formatDuration(plan.duration_days)}`}
+                  href={`/plans/${plan.slug}`}
+                  ctaLabel="View plan"
+                  soldOut={available === 0}
+                  // Only the first. "The first row" depends on the breakpoint -
+                  // three cards wide on a laptop but one on a phone, where
+                  // preloading three would have two off-screen photographs
+                  // competing with the one the visitor is actually waiting for.
+                  priority={index === 0}
+                />
+              </li>
+            )
+          })}
         </ul>
       )}
     </div>

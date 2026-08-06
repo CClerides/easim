@@ -46,7 +46,7 @@ export default async function HomePage() {
   const [plans, availability] = await Promise.all([getActivePlans(), getAvailability()])
 
   // A Map cannot cross the server/client boundary, so it is flattened here.
-  const availabilityByPlan = Object.fromEntries(availability)
+  const availabilityByPlan = Object.fromEntries(availability ?? [])
 
   const featured = FEATURED.map((slug) => plans.find((plan) => plan.slug === slug)).filter(
     (plan): plan is NonNullable<typeof plan> => Boolean(plan),
