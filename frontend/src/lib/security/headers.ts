@@ -29,7 +29,12 @@ function contentSecurityPolicy(): string {
     `style-src 'self' 'unsafe-inline'`,
     // blob: and data: cover the QR code, which is generated in memory rather
     // than fetched from anywhere.
-    `img-src 'self' data: blob:`,
+    //
+    // The Carto host serves the basemap tiles behind the destination cards.
+    // Without it listed, the tiles are blocked and the cards open onto an
+    // empty rectangle with nothing in the console but a CSP report - the same
+    // silent failure that hid the analytics script earlier in this build.
+    `img-src 'self' data: blob: https://cartodb-basemaps-a.global.ssl.fastly.net`,
     `font-src 'self' data:`,
     // The dev-only `ws:` is the hot-reload socket. Production never needs it.
     `connect-src 'self'${supabaseOrigins()}${isDev ? ' ws://localhost:*' : ''}`,
