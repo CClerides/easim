@@ -1,9 +1,10 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { getActivePlans, getAvailability } from '@/lib/plans'
-import { PlanCard } from '@/components/commerce/plan-card'
 import { Reveal } from '@/components/site/reveal'
 import { HeroIntro } from '@/components/site/hero-intro'
+import { PinnedHero } from '@/components/site/pinned-hero'
+import { DestinationsGrid } from '@/components/site/destinations-grid'
 
 /**
  * The delivery story, told as a sequence rather than as three equal cards.
@@ -32,85 +33,76 @@ const DELIVERY = [
 
 export default async function HomePage() {
   const [plans, availability] = await Promise.all([getActivePlans(), getAvailability()])
-  const featured = plans.slice(0, 6)
+
+  // A Map cannot cross the server/client boundary, so it is flattened here.
+  const availabilityByPlan = Object.fromEntries(availability)
+
+  const hero = (
+    <div className="relative isolate h-full">
+      <Image
+        src="/brand/hero-network.webp"
+        alt=""
+        fill
+        priority
+        sizes="100vw"
+        className="object-cover object-right"
+      />
+      {/*
+        Scrim, not a wash. Opaque behind the copy and clearing quickly so the
+        artwork reads on the right.
+      */}
+      <div
+        aria-hidden
+        className="absolute inset-0 bg-gradient-to-r from-background from-30% via-background/70 via-55% to-transparent"
+      />
+
+      <div className="relative mx-auto flex h-full max-w-6xl flex-col justify-center px-6">
+        <HeroIntro>
+          <p className="font-mono text-xs tracking-[0.22em] text-accent uppercase">
+            Prepaid eSIM data
+          </p>
+          <h1 className="mt-6 max-w-xl text-5xl leading-[1.05] font-semibold sm:text-6xl">
+            Land with data already working.
+          </h1>
+          <p className="mt-6 max-w-md text-lg leading-relaxed text-muted">
+            Buy before you fly. Your eSIM arrives the moment payment clears.
+          </p>
+
+          <div className="mt-10 flex flex-wrap items-center gap-3">
+            <Link href="/plans" className="btn btn-primary px-6 py-3">
+              Browse plans
+            </Link>
+            <Link href="#delivery" className="btn btn-secondary px-6 py-3">
+              How delivery works
+            </Link>
+          </div>
+        </HeroIntro>
+      </div>
+    </div>
+  )
 
   return (
     <>
       {/*
-        Asymmetric split hero. The generated artwork already places the globe
-        to the right with real empty space at left, so the composition follows
-        the image rather than fighting it with an overlay.
+        The hero holds the full viewport and pins while the destinations arrive
+        over it. Scroll position drives the handover, so it moves at the
+        reader's pace rather than playing at them.
       */}
-      <section className="relative isolate overflow-hidden border-b border-border">
-        <Image
-          src="/brand/hero-network.webp"
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-right"
-        />
-        {/*
-          Scrim, not a wash. It is opaque behind the copy and clears quickly so
-          the artwork actually reads on the right. An even 85% veil across the
-          whole width made the image invisible and the section pointless.
-        */}
-        <div
-          aria-hidden
-          className="absolute inset-0 bg-gradient-to-r from-background from-30% via-background/70 via-55% to-transparent"
-        />
+      <PinnedHero hero={hero}>
+        <section className="mx-auto w-full max-w-6xl px-6 pt-16 pb-24">
+          <div className="mb-10 flex flex-wrap items-end justify-between gap-6">
+            <h2 className="text-3xl font-semibold">Eight destinations</h2>
+            <Link
+              href="/plans"
+              className="text-sm text-muted underline underline-offset-4 transition-colors hover:text-accent"
+            >
+              See every plan
+            </Link>
+          </div>
 
-        <div className="relative mx-auto max-w-6xl px-6 pt-24 pb-28 lg:pb-36">
-          <HeroIntro>
-            <p className="font-mono text-xs tracking-[0.22em] text-accent uppercase">
-              Prepaid eSIM data
-            </p>
-            <h1 className="mt-6 max-w-xl text-5xl leading-[1.05] font-semibold sm:text-6xl">
-              Land with data already working.
-            </h1>
-            <p className="mt-6 max-w-md text-lg leading-relaxed text-muted">
-              Buy before you fly. Your eSIM arrives the moment payment clears.
-            </p>
-
-            <div className="mt-10 flex flex-wrap items-center gap-3">
-              <Link
-                href="/plans"
-                className="btn btn-primary px-6 py-3"
-              >
-                Browse plans
-              </Link>
-              <Link
-                href="#delivery"
-                className="btn btn-secondary px-6 py-3"
-              >
-                How delivery works
-              </Link>
-            </div>
-          </HeroIntro>
-        </div>
-      </section>
-
-      <section className="mx-auto w-full max-w-6xl px-6 py-24">
-        <Reveal className="flex flex-wrap items-end justify-between gap-6">
-          <h2 className="text-3xl font-semibold">Eight destinations</h2>
-          <Link
-            href="/plans"
-            className="text-sm text-muted underline underline-offset-4 transition-colors hover:text-accent"
-          >
-            See every plan
-          </Link>
-        </Reveal>
-
-        <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {featured.map((plan, index) => (
-            <li key={plan.id} className="h-full">
-              <Reveal delay={index * 0.05} className="h-full">
-                <PlanCard plan={plan} available={availability.get(plan.id)} />
-              </Reveal>
-            </li>
-          ))}
-        </ul>
-      </section>
+          <DestinationsGrid plans={plans} availability={availabilityByPlan} />
+        </section>
+      </PinnedHero>
 
       {/*
         A different layout family from the grid above: a sticky heading beside
@@ -151,10 +143,7 @@ export default async function HomePage() {
           <p className="mt-4 text-muted">
             Eight regions, from a week in the UAE to a month of global data.
           </p>
-          <Link
-            href="/plans"
-            className="btn btn-primary mt-8 px-6 py-3"
-          >
+          <Link href="/plans" className="btn btn-primary mt-8 px-6 py-3">
             Browse plans
           </Link>
         </Reveal>
