@@ -26,25 +26,34 @@ export function DestinationsGrid({
   plans: Plan[]
   availability: Record<string, number>
 }) {
-  // The card has a fixed 240px width, so "four per row" is a container width
-  // rather than a grid: 4 x 240 plus 3 x 32 of gap. Constraining it here keeps
-  // the published component untouched.
+  // The card has a fixed width, so the row count is a container width rather
+  // than a grid: 3 x 340 plus 2 x 32 of gap. Keeping it a width leaves the
+  // published component untouched.
   return (
-    <div className="mx-auto flex max-w-[1056px] flex-wrap items-start justify-center gap-8">
+    <div className="mx-auto flex max-w-[1140px] flex-wrap items-start justify-center gap-8">
       {plans.map((plan) => {
         const destination = destinationFor(plan.slug)
         const left = availability[plan.id]
 
         return (
           <div key={plan.id} className="flex flex-col items-start gap-3">
-            <LocationMap
-              location={`${plan.region} · ${formatPrice(plan.price_cents)}`}
-              latitude={destination.latitude}
-              longitude={destination.longitude}
-              zoom={destination.zoom}
-            />
+            {/*
+              The slot keeps the card's collapsed size. The card itself is
+              taken out of flow, so opening it lays the map over the page
+              instead of pushing the row down - otherwise the label directly
+              under the cursor jumps 170px the moment you hover it.
+            */}
+            <div className="relative h-[210px] w-[340px] hover:z-20">
+              <LocationMap
+                className="absolute top-0 left-0"
+                location={`${plan.region} · ${formatPrice(plan.price_cents)}`}
+                latitude={destination.latitude}
+                longitude={destination.longitude}
+                zoom={destination.zoom}
+              />
+            </div>
 
-            <div className="flex w-[240px] items-center justify-between text-sm">
+            <div className="flex w-[340px] items-center justify-between text-sm">
               <span className="text-muted">
                 {formatData(plan.data_mb)} · {formatDuration(plan.duration_days)}
               </span>

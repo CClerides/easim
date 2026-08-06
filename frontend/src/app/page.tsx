@@ -1,9 +1,9 @@
 import Link from 'next/link'
-import Image from 'next/image'
+import { ArrowRight } from 'lucide-react'
 import { getActivePlans, getAvailability } from '@/lib/plans'
 import { Reveal } from '@/components/site/reveal'
 import { HeroIntro } from '@/components/site/hero-intro'
-import { PinnedHero } from '@/components/site/pinned-hero'
+import { SimCard3D } from '@/components/site/sim-card-3d'
 import { DestinationsGrid } from '@/components/site/destinations-grid'
 import { CoverageMap } from '@/components/site/coverage-map'
 import { SnapScope } from '@/components/site/snap-scope'
@@ -34,59 +34,22 @@ const DELIVERY = [
 ]
 
 /**
- * Snapping has to live on the element that actually scrolls, which is the
- * document, and a page cannot style <html>. This tiny client component adds
- * the class on mount and removes it on navigation, so the behaviour is scoped
- * to the landing page and a checkout never snaps.
+ * The three destinations shown on the landing page.
+ *
+ * Three, not eight, so each card can be large enough to be worth looking at.
+ * The rest live on /plans, which the section says so explicitly rather than
+ * hoping the visitor guesses.
  */
+const FEATURED = ['europe-5gb-15d', 'usa-3gb-7d', 'uae-5gb-7d']
+
 export default async function HomePage() {
   const [plans, availability] = await Promise.all([getActivePlans(), getAvailability()])
 
   // A Map cannot cross the server/client boundary, so it is flattened here.
   const availabilityByPlan = Object.fromEntries(availability)
 
-  const hero = (
-    <div className="relative isolate h-full">
-      <Image
-        src="/brand/hero-network.webp"
-        alt=""
-        fill
-        priority
-        sizes="100vw"
-        className="object-cover object-right"
-      />
-      {/*
-        Scrim, not a wash. Opaque behind the copy and clearing quickly so the
-        artwork reads on the right.
-      */}
-      <div
-        aria-hidden
-        className="absolute inset-0 bg-gradient-to-r from-background from-30% via-background/70 via-55% to-transparent"
-      />
-
-      <div className="relative mx-auto flex h-full max-w-6xl flex-col justify-center px-6">
-        <HeroIntro>
-          <p className="font-mono text-xs tracking-[0.22em] text-accent uppercase">
-            Prepaid eSIM data
-          </p>
-          <h1 className="mt-6 max-w-xl text-5xl leading-[1.05] font-semibold sm:text-6xl">
-            Land with data already working.
-          </h1>
-          <p className="mt-6 max-w-md text-lg leading-relaxed text-muted">
-            Buy before you fly. Your eSIM arrives the moment payment clears.
-          </p>
-
-          <div className="mt-10 flex flex-wrap items-center gap-3">
-            <Link href="/plans" className="btn btn-primary px-6 py-3">
-              Browse plans
-            </Link>
-            <Link href="#delivery" className="btn btn-secondary px-6 py-3">
-              How delivery works
-            </Link>
-          </div>
-        </HeroIntro>
-      </div>
-    </div>
+  const featured = FEATURED.map((slug) => plans.find((plan) => plan.slug === slug)).filter(
+    (plan): plan is NonNullable<typeof plan> => Boolean(plan),
   )
 
   return (
@@ -94,42 +57,79 @@ export default async function HomePage() {
       <SnapScope />
 
       {/*
-        The hero holds the full viewport and pins while the destinations arrive
-        over it. Scroll position drives the handover, so it moves at the
-        reader's pace rather than playing at them.
+        Centred hero: one message, one action, then the product itself. The
+        card is interactive rather than a still, so the first thing the visitor
+        can do on the page is touch the thing being sold.
       */}
-      <PinnedHero hero={hero}>
-        {/*
-          Exactly one viewport tall, so it is safe to snap to. The routes draw
-          themselves as it arrives.
-        */}
-        <section className="snap-section flex min-h-[100dvh] flex-col justify-center border-b border-border bg-background py-16">
-          <CoverageMap plans={plans} />
-        </section>
+      {/*
+        pt-28 clears the 80px sticky header. Centring a full-height section
+        without it puts the headline underneath the chrome, which is what the
+        first version did.
+      */}
+      <section className="snap-section flex min-h-[100dvh] flex-col justify-center overflow-hidden pt-28 pb-12">
+        <div className="mx-auto w-full max-w-7xl px-6 lg:px-10">
+          <HeroIntro>
+            <h1 className="mx-auto max-w-4xl text-center text-5xl font-semibold sm:text-6xl lg:text-7xl">
+              Data that works the moment you land.
+            </h1>
+            <p className="mx-auto mt-6 max-w-xl text-center text-lg leading-relaxed text-muted">
+              Buy an eSIM before you fly. The QR code reaches your account
+              seconds after payment clears.
+            </p>
+            <div className="mt-9 flex justify-center">
+              <Link href="/plans" className="btn btn-primary group px-7 py-3.5">
+                Buy now
+                <ArrowRight
+                  className="size-4 transition-transform duration-200 group-hover:translate-x-0.5"
+                  aria-hidden
+                />
+              </Link>
+            </div>
+          </HeroIntro>
 
-        <section className="snap-section mx-auto w-full max-w-6xl px-6 pt-16 pb-24">
-          <div className="mb-10 flex flex-wrap items-end justify-between gap-6">
-            <h2 className="text-3xl font-semibold">Eight destinations</h2>
-            <Link
-              href="/plans"
-              className="text-sm text-muted underline underline-offset-4 transition-colors hover:text-accent"
-            >
-              See every plan
-            </Link>
+          <div className="mt-14 lg:mt-16">
+            <SimCard3D />
+          </div>
+        </div>
+      </section>
+
+      <section className="snap-section flex min-h-[100dvh] flex-col justify-center border-t border-border py-20">
+        <CoverageMap plans={plans} />
+      </section>
+
+      <section className="snap-section mx-auto w-full max-w-7xl px-6 py-24 lg:px-10">
+        <Reveal className="mb-12 flex flex-wrap items-end justify-between gap-6">
+          <div>
+            <h2 className="text-3xl font-semibold sm:text-4xl">Three to start with</h2>
+            <p className="mt-3 max-w-md text-muted">
+              Eight regions in total, from a week in the UAE to a month of
+              global data.
+            </p>
           </div>
 
-          <DestinationsGrid plans={plans} availability={availabilityByPlan} />
-        </section>
-      </PinnedHero>
+          <Link
+            href="/plans"
+            className="group inline-flex items-center gap-2 text-sm font-medium text-accent"
+          >
+            See every plan
+            <ArrowRight
+              className="size-4 transition-transform duration-200 group-hover:translate-x-1"
+              aria-hidden
+            />
+          </Link>
+        </Reveal>
+
+        <DestinationsGrid plans={featured} availability={availabilityByPlan} />
+      </section>
 
       {/*
         A different layout family from the grid above: a sticky heading beside
         a sequence, separated by hairlines rather than boxed into cards.
       */}
-      <section id="delivery" className="snap-section scroll-mt-20 border-t border-border bg-surface/40">
-        <div className="mx-auto grid max-w-6xl gap-12 px-6 py-24 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
-          <div className="lg:sticky lg:top-28 lg:self-start">
-            <h2 className="text-3xl font-semibold">What happens after you pay</h2>
+      <section id="delivery" className="snap-section scroll-mt-24 border-t border-border bg-surface">
+        <div className="mx-auto grid max-w-7xl gap-12 px-6 py-24 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:px-10">
+          <div className="lg:sticky lg:top-32 lg:self-start">
+            <h2 className="text-3xl font-semibold sm:text-4xl">What happens after you pay</h2>
             <p className="mt-4 max-w-sm text-muted">
               The interesting part of this shop is the part you never see.
             </p>
@@ -157,12 +157,16 @@ export default async function HomePage() {
 
       <section className="snap-section border-t border-border">
         <Reveal className="mx-auto max-w-2xl px-6 py-24 text-center">
-          <h2 className="text-3xl font-semibold">Pick a destination</h2>
+          <h2 className="text-3xl font-semibold sm:text-4xl">Pick a destination</h2>
           <p className="mt-4 text-muted">
-            Eight regions, from a week in the UAE to a month of global data.
+            Eight regions, delivered automatically the moment payment clears.
           </p>
-          <Link href="/plans" className="btn btn-primary mt-8 px-6 py-3">
+          <Link href="/plans" className="btn btn-primary group mt-8 px-7 py-3.5">
             Browse plans
+            <ArrowRight
+              className="size-4 transition-transform duration-200 group-hover:translate-x-0.5"
+              aria-hidden
+            />
           </Link>
         </Reveal>
       </section>

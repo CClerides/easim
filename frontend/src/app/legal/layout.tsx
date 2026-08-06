@@ -22,7 +22,7 @@ export default function LegalLayout({ children }: LayoutProps<'/legal'>) {
         ))}
       </nav>
 
-      <article className="space-y-6 leading-relaxed [&_h1]:text-3xl [&_h1]:font-semibold [&_h2]:mt-10 [&_h2]:text-xl [&_h2]:font-semibold [&_p]:opacity-90 [&_ul]:list-disc [&_ul]:space-y-2 [&_ul]:pl-6 [&_ul]:opacity-90">
+      <article className="space-y-6 leading-relaxed [&_h1]:text-3xl [&_h1]:font-semibold [&_h2]:mt-10 [&_h2]:text-xl [&_h2]:font-semibold [&_p]:text-muted-strong [&_ul]:list-disc [&_ul]:space-y-2 [&_ul]:pl-6 [&_ul]:text-muted-strong">
         {children}
       </article>
 

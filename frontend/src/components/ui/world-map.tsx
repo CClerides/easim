@@ -14,9 +14,9 @@ import { motion, useReducedMotion } from 'motion/react'
  *   something that never changes. Generating it once on the server keeps it
  *   out of the client bundle entirely.
  *
- *   `next-themes` is dropped. This site is a single committed dark theme, so
- *   a runtime theme lookup would be a dependency and a hydration mismatch in
- *   exchange for a branch that can only ever go one way.
+ *   `next-themes` is dropped. This site commits to one theme, so a runtime
+ *   theme lookup would be a dependency and a hydration mismatch in exchange
+ *   for a branch that can only ever go one way.
  *
  *   `framer-motion` becomes `motion/react`, which is the same library under
  *   its current name and already in this project. Installing the legacy alias
@@ -62,7 +62,7 @@ export function WorldMap({
         height={495}
         draggable={false}
         priority
-        className="pointer-events-none h-full w-full [mask-image:linear-gradient(to_bottom,transparent,black_12%,black_88%,transparent)] select-none"
+        className="pointer-events-none h-full w-full [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)] select-none"
       />
 
       <svg
