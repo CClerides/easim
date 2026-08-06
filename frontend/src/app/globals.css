@@ -70,6 +70,8 @@
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
   --color-muted-strong: var(--muted-strong);
+  /* shadcn's name, aliased so third-party components work unmodified. */
+  --color-muted-foreground: var(--muted);
   --color-accent: var(--accent);
   --color-accent-strong: var(--accent-strong);
   --color-accent-quiet: var(--accent-quiet);
@@ -153,40 +155,51 @@ body {
 }
 
 /*
+ * A light surface, scoped.
+ *
+ * The 21st.dev map card is used exactly as published, and it is written
+ * against shadcn's token names on a light theme. Rather than fork it, this
+ * class redefines those variables locally with light values, so
+ * `bg-background`, `text-foreground` and `border-border` resolve to paper
+ * inside the card while the rest of the page stays dark.
+ *
+ * That is what makes an unmodified third-party component sit correctly in a
+ * codebase whose theme is the opposite of the one it was designed for.
+ */
+.card-surface {
+  --background: #ffffff;
+  --surface: #f4f5f7;
+  --border: #e3e6ec;
+  --foreground: #14161c;
+  --muted: #6b7280;
+}
+
+/*
  * Section snapping.
  *
- * One small scroll should carry you to the next section rather than leaving
- * you stranded between two. That needs `mandatory`: proximity only pulls when
- * you happen to stop near a boundary, so a short scroll falls back where it
- * started. `scroll-snap-stop: always` then stops a fast flick skipping a
- * section entirely.
+ * This landed on `proximity` after mandatory proved too eager to live with.
  *
- * Mandatory has one real hazard: a section taller than the viewport becomes
- * partly unreachable, because the scroll is dragged back to a snap point past
- * the content you were reading. An earlier attempt did exactly that and pinned
- * the page at 64px of a possible 2790 with the footer unreachable.
+ * Mandatory forces the scroll to come to rest on a boundary every time, so
+ * every gesture, however small, was captured and the page lurched a whole
+ * viewport. It read as the page grabbing the scrollbar out of your hand.
  *
- * Two rules keep that from happening, and both are load-bearing:
- *
- *   Every top-level section on the page carries a snap point. Skipping one
- *   makes everything inside it unreachable.
- *
- *   Snapping is switched off below 820px of viewport height. On a short
- *   window the sections no longer fit, and the hazard returns. A laptop in
- *   landscape gets the choreography; a small window gets an ordinary page,
- *   which is the right trade.
+ * Proximity only pulls when a gesture happens to end near a boundary. A
+ * deliberate scroll still lands cleanly on the next section, a small
+ * adjustment is left alone, and reading inside a long section is never
+ * interrupted. That is the "needs more force" behaviour, and it also removes
+ * mandatory's hazard of stranding content taller than the viewport.
  *
  * Scoped to a class so only the landing page behaves this way. Snapping
- * through a checkout would be hostile.
+ * through a checkout would be hostile, and switched off under reduced motion
+ * because it moves the page further than the reader asked.
  */
-@media (min-height: 820px) and (prefers-reduced-motion: no-preference) {
+@media (prefers-reduced-motion: no-preference) {
   .snap-sections {
-    scroll-snap-type: y mandatory;
+    scroll-snap-type: y proximity;
   }
 
   .snap-sections .snap-section {
     scroll-snap-align: start;
-    scroll-snap-stop: always;
   }
 }
 

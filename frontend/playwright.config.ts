@@ -1,4 +1,9 @@
 import { defineConfig, devices } from '@playwright/test'
+import { config as loadEnv } from 'dotenv'
+
+// These tests talk to the real project, so they need the same .env.local the
+// dev server uses - the teardown cannot give stock back without the secret key.
+loadEnv({ path: '.env.local', quiet: true })
 
 /**
  * End-to-end tests.
@@ -25,6 +30,11 @@ export default defineConfig({
   workers: 1,
   retries: 0,
   reporter: [['list']],
+  globalSetup: './e2e/global-setup.ts',
+  // Buying through the UI consumes eSIMs from a finite pool. Without this the
+  // suite drains the shop and later runs fail on out-of-stock rather than on
+  // anything real.
+  globalTeardown: './e2e/global-teardown.ts',
   use: {
     baseURL,
     trace: 'retain-on-failure',
