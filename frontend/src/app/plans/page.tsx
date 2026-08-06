@@ -3,7 +3,6 @@ import { Signal } from 'lucide-react'
 import { getActivePlans, getAvailability } from '@/lib/plans'
 import { TravelCard } from '@/components/ui/card-7'
 import { StockBadge } from '@/components/commerce/stock-badge'
-import { DestinationMarquee } from '@/components/site/destination-marquee'
 import { destinationFor } from '@/lib/destinations'
 import { formatData, formatDuration, formatPrice } from '@/lib/format'
 
@@ -49,21 +48,6 @@ export default async function PlansPage() {
         </p>
       </header>
 
-      {/*
-        The marquee is the one client component on this page, and it only
-        mounts when there is something to put on the curve - an empty
-        catalogue means an empty path, which is a moving blank space.
-
-        The generous top margin is not spacing for its own sake: the path
-        loops upward at its midpoint, and at mt-6 the topmost photo cut
-        straight through the paragraph above it.
-      */}
-      {plans.length > 0 && (
-        <div className="mt-14">
-          <DestinationMarquee plans={plans} />
-        </div>
-      )}
-
       {plans.length === 0 ? (
         <div className="mt-12 rounded-xl border border-border bg-surface p-8">
           <h2 className="font-medium">The catalogue is unavailable</h2>
@@ -80,7 +64,7 @@ export default async function PlansPage() {
             return (
               <li key={plan.id} className="w-full max-w-sm">
                 <TravelCard
-                  className="h-[27rem]"
+                  className="aspect-square"
                   imageUrl={destination.image}
                   imageAlt={destination.imageAlt}
                   logo={<Signal className="h-6 w-6 text-white/80" aria-hidden />}

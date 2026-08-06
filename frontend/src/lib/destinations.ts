@@ -58,7 +58,7 @@ const DESTINATIONS: Record<string, Destination> = {
     longitude: 2.3522,
     zoom: 11,
     image: '/europe.jpeg',
-    imageAlt: 'A Paris street corner in the late afternoon',
+    imageAlt: 'A montage of European landmarks - the Colosseum, the Alhambra, the Eiffel Tower and the Acropolis',
     overview:
       'One plan for the whole trip. It keeps working when you cross a border, so Paris to Lisbon costs you nothing extra.',
   },
@@ -68,7 +68,7 @@ const DESTINATIONS: Record<string, Destination> = {
     longitude: 139.6503,
     zoom: 11,
     image: '/japan.jpg',
-    imageAlt: 'A busy Tokyo crossing lit by shopfront signs',
+    imageAlt: 'A red pagoda in blossom with Mount Fuji behind it',
     overview:
       'Enough data for a month of maps, translation and train times, in a country where public Wi-Fi rarely obliges.',
   },
@@ -78,7 +78,7 @@ const DESTINATIONS: Record<string, Destination> = {
     longitude: -74.006,
     zoom: 11,
     image: '/USA.jpg',
-    imageAlt: 'The Manhattan skyline seen across the water',
+    imageAlt: 'The Statue of Liberty with the Manhattan skyline behind it',
     overview:
       'Enough for a short trip. Rideshares, boarding passes and directions, without a week-long plan you will not finish.',
   },
@@ -98,9 +98,9 @@ const DESTINATIONS: Record<string, Destination> = {
     longitude: 28.9784,
     zoom: 11,
     image: '/turkey.jpg',
-    imageAlt: 'Rooftops and minarets above Istanbul at dusk',
+    imageAlt: 'Hot air balloons rising over the rock valleys of Cappadocia',
     overview:
-      'Generous data for two weeks, which is what navigating a city that spans two continents actually costs.',
+      'Two weeks of generous data, for a country big enough that you will want to cross it rather than sit still.',
   },
   'uae-5gb-7d': {
     city: 'Dubai',
@@ -108,7 +108,7 @@ const DESTINATIONS: Record<string, Destination> = {
     longitude: 55.2708,
     zoom: 11,
     image: '/UAE.jpeg',
-    imageAlt: 'The Dubai skyline at night',
+    imageAlt: 'The towers of Dubai Marina curving around the water',
     overview:
       'Connected the moment you land, so the ride to the hotel is booked before you reach the taxi rank.',
   },
@@ -118,7 +118,7 @@ const DESTINATIONS: Record<string, Destination> = {
     longitude: 100.5018,
     zoom: 11,
     image: '/thailand.jpg',
-    imageAlt: 'A longtail boat moored off a Thai beach',
+    imageAlt: 'A limestone cliff rising from turquoise water, with a longtail boat below',
     overview:
       'Island-hopping data. Enough to keep maps and messages running well past the last stretch of hotel Wi-Fi.',
   },
@@ -128,7 +128,7 @@ const DESTINATIONS: Record<string, Destination> = {
     longitude: -99.1332,
     zoom: 11,
     image: '/mexico.jpg',
-    imageAlt: 'A sunlit colonial street in Mexico City',
+    imageAlt: 'A Mexican flag flying over a tree-lined avenue in Mexico City',
     overview:
       'A full month at a price that suits a long stay rather than a weekend.',
   },
