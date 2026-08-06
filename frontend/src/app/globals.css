@@ -178,29 +178,6 @@ body {
 }
 
 /*
- * A light surface, scoped.
- *
- * The 21st.dev map card is used exactly as published, and it is written
- * against shadcn's token names on a light theme. Rather than fork it, this
- * class redefines those variables locally with light values, so
- * `bg-background`, `text-foreground` and `border-border` resolve to paper
- * inside the card while the rest of the page stays dark.
- *
- * That is what makes an unmodified third-party component sit correctly in a
- * codebase whose theme is the opposite of the one it was designed for.
- */
-/*
- * Kept as a no-op scope.
- *
- * The published map card is written against shadcn's light tokens, which are
- * now simply the page's tokens. The class stays so the component keeps a
- * single, named place to be re-scoped if the theme ever moves again.
- */
-.card-surface {
-  --surface: #f6f7f9;
-}
-
-/*
  * Section snapping.
  *
  * This landed on `proximity` after mandatory proved too eager to live with.

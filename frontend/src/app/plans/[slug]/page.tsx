@@ -50,14 +50,7 @@ export default async function PlanPage({ params }: PageProps<'/plans/[slug]'>) {
   const destination = destinationFor(plan.slug)
   const availability = await getAvailability()
 
-  /*
-   * A plan with nothing left is absent from the availability read rather than
-   * present with a zero - `plan_availability()` groups over the profiles that
-   * exist, so the last one selling removes the row. Reading `undefined` as
-   * "unknown" would put a sold-out plan in someone's cart. If any row came
-   * back the read worked, so an absent plan is genuinely out.
-   */
-  const available = availability.size > 0 ? (availability.get(plan.id) ?? 0) : undefined
+  const available = availability?.get(plan.id)
   const soldOut = available === 0
 
   return (

@@ -21,23 +21,6 @@ export const metadata: Metadata = {
 export default async function PlansPage() {
   const [plans, availability] = await Promise.all([getActivePlans(), getAvailability()])
 
-  /*
-   * A plan with nothing left is missing from the availability read entirely.
-   *
-   * `plan_availability()` counts rows in `esim_profiles` grouped by plan, so a
-   * plan whose last profile has been sold produces no row rather than a zero.
-   * Read naively, `undefined` then means "unknown" and the card offers a plan
-   * that cannot be bought.
-   *
-   * If any row came back the read succeeded, so a plan absent from it is
-   * genuinely sold out. If nothing came back at all we cannot tell a failed
-   * read from an empty warehouse, and saying nothing beats guessing wrong in
-   * either direction.
-   */
-  const stockIsKnown = availability.size > 0
-  const availableFor = (planId: string) =>
-    stockIsKnown ? (availability.get(planId) ?? 0) : undefined
-
   return (
     <div className="mx-auto w-full max-w-6xl px-6 py-16">
       <header className="max-w-2xl">
@@ -59,7 +42,7 @@ export default async function PlansPage() {
         <ul className="mt-12 grid justify-items-center gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {plans.map((plan, index) => {
             const destination = destinationFor(plan.slug)
-            const available = availableFor(plan.id)
+            const available = availability?.get(plan.id)
 
             return (
               <li key={plan.id} className="w-full max-w-sm">
@@ -76,9 +59,11 @@ export default async function PlansPage() {
                   href={`/plans/${plan.slug}`}
                   ctaLabel="View plan"
                   soldOut={available === 0}
-                  // The first row is above the fold on a laptop; the rest can
-                  // wait until they are scrolled towards.
-                  priority={index < 3}
+                  // Only the first. "The first row" depends on the breakpoint -
+                  // three cards wide on a laptop but one on a phone, where
+                  // preloading three would have two off-screen photographs
+                  // competing with the one the visitor is actually waiting for.
+                  priority={index === 0}
                 />
               </li>
             )

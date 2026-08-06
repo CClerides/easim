@@ -16,10 +16,8 @@ import { useEffect, useMemo, useRef, useState } from 'react'
  *
  * It expects shadcn's token names (`bg-background`, `text-muted-foreground`,
  * `border-border`). This project does not use shadcn, so those names are
- * aliased in globals.css. The component was written light, and the page is
- * now light too, so `.card-surface` has almost nothing left to do - it stays
- * as the scope those aliases resolve in rather than being deleted and
- * re-derived the next time this component is dropped in somewhere darker.
+ * aliased in globals.css. The component was written light and the page is now
+ * light too, so it needs nothing else to sit correctly here.
  */
 
 interface LocationMapProps {
@@ -171,7 +169,7 @@ export function LocationMap({
   return (
     <motion.div
       ref={containerRef}
-      className={`card-surface relative select-none ${className ?? ''}`}
+      className={`relative select-none ${className ?? ''}`}
       style={{
         perspective: 1000,
       }}

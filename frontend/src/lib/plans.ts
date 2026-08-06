@@ -72,26 +72,45 @@ export const getPlanBySlug = unstable_cache(
 )
 
 /**
- * How many eSIMs are left, per plan. Never cached.
+ * How many eSIMs are left, per plan, or `null` if that could not be read.
+ * Never cached.
  *
  * Goes through the `plan_availability()` database function rather than
  * querying the table. The RLS policy on esim_profiles only lets you read a
  * profile that was sold to you, so a direct count would return zero for
  * everyone. The function returns aggregates only — the count is public
  * information, the ICCID and activation code never are.
+ *
+ * Two things this function owes its callers, both learned the hard way:
+ *
+ *   Every active plan gets an entry. The database function groups over the
+ *   profiles that exist, so a plan whose last one has sold produces no row at
+ *   all rather than a zero. Left to the caller, `map.get(id)` returns
+ *   `undefined` for a sold-out plan, which reads as "unknown" - and a plan
+ *   nobody can buy gets offered for sale. Filling the zeros here means no
+ *   caller has to know that.
+ *
+ *   Failure is `null`, not an empty map. Availability is a nicety, so a failed
+ *   read should not close the shop - but "we could not find out" and
+ *   "everything is sold out" are different facts, and an empty map cannot tell
+ *   them apart.
  */
-export async function getAvailability(): Promise<Map<string, number>> {
+export async function getAvailability(): Promise<Map<string, number> | null> {
   const supabase = createPublicClient()
   const { data, error } = await supabase.rpc('plan_availability')
 
-  // Availability is a nicety on the listing page. If it fails, the shop should
-  // still open, so this degrades to "unknown" rather than throwing.
-  if (error || !data) return new Map()
+  if (error || !data) return null
 
-  return new Map(
+  const counts = new Map(
     (data as { plan_id: string; available_count: number }[]).map((row) => [
       row.plan_id,
       Number(row.available_count),
     ]),
   )
+
+  for (const plan of await getActivePlans()) {
+    if (!counts.has(plan.id)) counts.set(plan.id, 0)
+  }
+
+  return counts
 }
