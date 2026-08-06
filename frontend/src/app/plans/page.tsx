@@ -70,7 +70,6 @@ export default async function PlansPage() {
                   logo={<Signal className="h-6 w-6 text-white/80" aria-hidden />}
                   badge={<StockBadge available={available} />}
                   title={plan.region}
-                  location={destination.city}
                   overview={destination.overview}
                   price={formatPrice(plan.price_cents)}
                   pricePeriod={`${formatData(plan.data_mb)} for ${formatDuration(plan.duration_days)}`}

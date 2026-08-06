@@ -54,7 +54,12 @@ interface TravelCardProps extends React.HTMLAttributes<HTMLDivElement> {
    */
   badge?: React.ReactNode
   title: string
-  location: string
+  /**
+   * A quiet line under the title. Optional: the plans page has nothing true to
+   * put here, since these plans cover regions rather than the cities their map
+   * coordinates point at.
+   */
+  location?: string
   overview: string
   /** Preformatted, including the currency symbol. */
   price: string
@@ -141,7 +146,7 @@ function TravelCard({
         >
           <div>
             <h3 className="text-3xl font-bold text-white">{title}</h3>
-            <p className="text-sm text-white/80">{location}</p>
+            {location && <p className="text-sm text-white/80">{location}</p>}
           </div>
           <div>
             <h4 className="text-xs font-semibold tracking-wider text-white/90">OVERVIEW</h4>

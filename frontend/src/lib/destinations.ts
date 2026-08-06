@@ -11,7 +11,6 @@
  * Atlantic where the most landmass is visible at once.
  */
 export type Destination = {
-  city: string
   latitude: number
   longitude: number
   zoom: number
@@ -42,7 +41,7 @@ export type Destination = {
 }
 
 const FALLBACK: Destination = {
-  city: 'Worldwide',
+  // Worldwide
   latitude: 25,
   longitude: -20,
   zoom: 3,
@@ -53,7 +52,7 @@ const FALLBACK: Destination = {
 
 const DESTINATIONS: Record<string, Destination> = {
   'europe-5gb-15d': {
-    city: 'Paris',
+    // Paris
     latitude: 48.8566,
     longitude: 2.3522,
     zoom: 11,
@@ -63,7 +62,7 @@ const DESTINATIONS: Record<string, Destination> = {
       'One plan for the whole trip. It keeps working when you cross a border, so Paris to Lisbon costs you nothing extra.',
   },
   'japan-10gb-30d': {
-    city: 'Tokyo',
+    // Tokyo
     latitude: 35.6762,
     longitude: 139.6503,
     zoom: 11,
@@ -73,7 +72,7 @@ const DESTINATIONS: Record<string, Destination> = {
       'Enough data for a month of maps, translation and train times, in a country where public Wi-Fi rarely obliges.',
   },
   'usa-3gb-7d': {
-    city: 'New York',
+    // New York
     latitude: 40.7128,
     longitude: -74.006,
     zoom: 11,
@@ -83,7 +82,7 @@ const DESTINATIONS: Record<string, Destination> = {
       'Enough for a short trip. Rideshares, boarding passes and directions, without a week-long plan you will not finish.',
   },
   'global-20gb-30d': {
-    city: 'Worldwide',
+    // Worldwide
     latitude: 25,
     longitude: -20,
     zoom: 3,
@@ -93,7 +92,7 @@ const DESTINATIONS: Record<string, Destination> = {
       'One eSIM for every leg. Buy it once and stop thinking about coverage for the rest of the itinerary.',
   },
   'turkey-10gb-15d': {
-    city: 'Istanbul',
+    // Istanbul
     latitude: 41.0082,
     longitude: 28.9784,
     zoom: 11,
@@ -103,7 +102,7 @@ const DESTINATIONS: Record<string, Destination> = {
       'Two weeks of generous data, for a country big enough that you will want to cross it rather than sit still.',
   },
   'uae-5gb-7d': {
-    city: 'Dubai',
+    // Dubai
     latitude: 25.2048,
     longitude: 55.2708,
     zoom: 11,
@@ -113,7 +112,7 @@ const DESTINATIONS: Record<string, Destination> = {
       'Connected the moment you land, so the ride to the hotel is booked before you reach the taxi rank.',
   },
   'thailand-8gb-15d': {
-    city: 'Bangkok',
+    // Bangkok
     latitude: 13.7563,
     longitude: 100.5018,
     zoom: 11,
@@ -123,7 +122,7 @@ const DESTINATIONS: Record<string, Destination> = {
       'Island-hopping data. Enough to keep maps and messages running well past the last stretch of hotel Wi-Fi.',
   },
   'mexico-5gb-30d': {
-    city: 'Mexico City',
+    // Mexico City
     latitude: 19.4326,
     longitude: -99.1332,
     zoom: 11,
