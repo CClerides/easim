@@ -287,7 +287,7 @@ was committed.**
 **What I set up before any code was written.** I structured the repository
 myself and handed Claude that structure to work inside — a pnpm workspace with
 the Next.js app in `frontend/`, the mock payment and eSIM provider as a
-separate package in `packages/mock-provider/`, and SQL migrations in `db/`. I
+separate package in `backend/`, and SQL migrations in `db/`. I
 then had it work through a spec → plan → task-by-task flow, and both documents
 are committed: [the design spec](docs/superpowers/specs/2026-08-05-esim-store-design.md)
 and [the implementation plan](docs/superpowers/plans/2026-08-05-esim-store.md).
