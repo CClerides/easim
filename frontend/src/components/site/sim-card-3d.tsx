@@ -44,6 +44,15 @@ export function SimCard3D() {
   const glareX = useTransform(pointerX, [-0.5, 0.5], ['20%', '80%'])
   const glareY = useTransform(pointerY, [-0.5, 0.5], ['15%', '85%'])
 
+  // Derived up here rather than inline in the JSX below, because the JSX sits
+  // after the reduced-motion early return - a hook down there would run on
+  // some renders and not others.
+  const glare = useTransform(
+    [glareX, glareY],
+    ([x, y]) =>
+      `radial-gradient(38% 46% at ${x} ${y}, rgba(255,255,255,0.55), transparent 70%)`,
+  )
+
   function handleMove(event: React.PointerEvent) {
     const rect = frame.current?.getBoundingClientRect()
     if (!rect) return
@@ -103,13 +112,7 @@ export function SimCard3D() {
         <motion.div
           aria-hidden
           className="pointer-events-none absolute inset-0 mix-blend-overlay"
-          style={{
-            background: useTransform(
-              [glareX, glareY],
-              ([x, y]) =>
-                `radial-gradient(38% 46% at ${x} ${y}, rgba(255,255,255,0.55), transparent 70%)`,
-            ),
-          }}
+          style={{ background: glare }}
         />
       </motion.div>
     </div>

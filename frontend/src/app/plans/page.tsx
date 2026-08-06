@@ -1,6 +1,11 @@
 import type { Metadata } from 'next'
+import { Signal } from 'lucide-react'
 import { getActivePlans, getAvailability } from '@/lib/plans'
-import { PlanCard } from '@/components/commerce/plan-card'
+import { TravelCard } from '@/components/ui/card-7'
+import { StockBadge } from '@/components/commerce/stock-badge'
+import { DestinationMarquee } from '@/components/site/destination-marquee'
+import { destinationFor } from '@/lib/destinations'
+import { formatData, formatDuration, formatPrice } from '@/lib/format'
 
 export const metadata: Metadata = {
   title: 'Plans - Easim',
@@ -17,6 +22,23 @@ export const metadata: Metadata = {
 export default async function PlansPage() {
   const [plans, availability] = await Promise.all([getActivePlans(), getAvailability()])
 
+  /*
+   * A plan with nothing left is missing from the availability read entirely.
+   *
+   * `plan_availability()` counts rows in `esim_profiles` grouped by plan, so a
+   * plan whose last profile has been sold produces no row rather than a zero.
+   * Read naively, `undefined` then means "unknown" and the card offers a plan
+   * that cannot be bought.
+   *
+   * If any row came back the read succeeded, so a plan absent from it is
+   * genuinely sold out. If nothing came back at all we cannot tell a failed
+   * read from an empty warehouse, and saying nothing beats guessing wrong in
+   * either direction.
+   */
+  const stockIsKnown = availability.size > 0
+  const availableFor = (planId: string) =>
+    stockIsKnown ? (availability.get(planId) ?? 0) : undefined
+
   return (
     <div className="mx-auto w-full max-w-6xl px-6 py-16">
       <header className="max-w-2xl">
@@ -27,6 +49,21 @@ export default async function PlansPage() {
         </p>
       </header>
 
+      {/*
+        The marquee is the one client component on this page, and it only
+        mounts when there is something to put on the curve - an empty
+        catalogue means an empty path, which is a moving blank space.
+
+        The generous top margin is not spacing for its own sake: the path
+        loops upward at its midpoint, and at mt-6 the topmost photo cut
+        straight through the paragraph above it.
+      */}
+      {plans.length > 0 && (
+        <div className="mt-14">
+          <DestinationMarquee plans={plans} />
+        </div>
+      )}
+
       {plans.length === 0 ? (
         <div className="mt-12 rounded-xl border border-border bg-surface p-8">
           <h2 className="font-medium">The catalogue is unavailable</h2>
@@ -35,12 +72,34 @@ export default async function PlansPage() {
           </p>
         </div>
       ) : (
-        <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {plans.map((plan) => (
-            <li key={plan.id}>
-              <PlanCard plan={plan} available={availability.get(plan.id)} />
-            </li>
-          ))}
+        <ul className="mt-12 grid justify-items-center gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {plans.map((plan, index) => {
+            const destination = destinationFor(plan.slug)
+            const available = availableFor(plan.id)
+
+            return (
+              <li key={plan.id} className="w-full max-w-sm">
+                <TravelCard
+                  className="h-[27rem]"
+                  imageUrl={destination.image}
+                  imageAlt={destination.imageAlt}
+                  logo={<Signal className="h-6 w-6 text-white/80" aria-hidden />}
+                  badge={<StockBadge available={available} />}
+                  title={plan.region}
+                  location={destination.city}
+                  overview={destination.overview}
+                  price={formatPrice(plan.price_cents)}
+                  pricePeriod={`${formatData(plan.data_mb)} for ${formatDuration(plan.duration_days)}`}
+                  href={`/plans/${plan.slug}`}
+                  ctaLabel="View plan"
+                  soldOut={available === 0}
+                  // The first row is above the fold on a laptop; the rest can
+                  // wait until they are scrolled towards.
+                  priority={index < 3}
+                />
+              </li>
+            )
+          })}
         </ul>
       )}
     </div>
