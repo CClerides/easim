@@ -12,7 +12,7 @@ timeout, a provider outage and stock exhaustion without ever losing an order.
 | **Live URL** | _set after deploy_ |
 | **Repo** | https://github.com/CClerides/easim |
 | **Stack** | Next.js 16 (App Router) · TypeScript · Tailwind CSS 4 · Supabase (Postgres, Auth, RLS, Realtime) · Vercel |
-| **Tests** | 109 unit + integration (Vitest), 8 end-to-end (Playwright) |
+| **Tests** | 113 unit + integration (Vitest), 8 end-to-end (Playwright) |
 
 ---
 
@@ -261,7 +261,7 @@ pnpm dev
 pnpm test
 ```
 
-109 unit and integration tests. The integration ones run against the real
+113 unit and integration tests. The integration ones run against the real
 Supabase project and the real mock provider — the guarantees being tested are
 database constraints and an HTTP boundary, so mocking either would test the
 mock. They return every eSIM they consume and run sequentially, because they
@@ -278,19 +278,60 @@ them at production with `BASE_URL=https://… pnpm e2e`.
 
 ## Where AI tooling was used
 
-Claude Code (Opus) wrote the large majority of this codebase, driven by me
-through a spec → plan → task-by-task workflow. Both documents are committed:
-[the design spec](docs/superpowers/specs/2026-08-05-esim-store-design.md) and
-[the implementation plan](docs/superpowers/plans/2026-08-05-esim-store.md).
+I used **Claude Code (Opus)** for the majority of this project, to raise both
+productivity and the quality of what I could ship inside 48 hours. I want to be
+straightforward about the division of labour: **I was the organiser and
+orchestrator, Claude was the one typing, and I reviewed every branch before it
+was committed.**
 
-Every feature is its own branch and pull request — 17 of them — so the history
-shows what was decided and why, one concern at a time.
+**What I set up before any code was written.** I structured the repository
+myself and handed Claude that structure to work inside — a pnpm workspace with
+the Next.js app in `frontend/`, the mock payment and eSIM provider as a
+separate package in `packages/mock-provider/`, and SQL migrations in `db/`. I
+then had it work through a spec → plan → task-by-task flow, and both documents
+are committed: [the design spec](docs/superpowers/specs/2026-08-05-esim-store-design.md)
+and [the implementation plan](docs/superpowers/plans/2026-08-05-esim-store.md).
 
-I reviewed and directed every decision. The ones I would particularly point at
-in a walkthrough are the security model (`SELECT`-only policies, secret key
-confined to `server-only`), the choice to drop the scheduler in favour of
-reader-driven reconciliation, and the deliberate distinction between an
-automatic retry and a manual one.
+**Version control was delegated deliberately.** I assigned Claude the branching
+and the commits, one branch and one pull request per feature, so the history
+reads as a sequence of decisions rather than a single dump. I reviewed each
+branch before it landed.
+
+**What I specified, rather than left open:**
+
+- **Security.** No environment variables exposed to the browser, no API
+  surface that trusts client input, and Row Level Security on every table. The
+  model I asked for is the one that shipped: `SELECT`-only policies with no
+  `INSERT`/`UPDATE`/`DELETE` policy anywhere, so the publishable key can read
+  your own rows and write nothing, and every write goes through the secret key
+  inside `server-only` modules behind an explicit authorisation check.
+- **Database.** The tables, their columns and the relationships between them —
+  plans, eSIM profiles, orders, order items, fulfilments, webhook events and
+  the admin audit log — plus the requirement that idempotency be enforced by
+  database constraints rather than by application code.
+- **Architecture and stack.** Next.js 16 with the App Router, TypeScript,
+  Tailwind CSS 4, Supabase for Postgres, Auth, RLS and Realtime, and Vercel for
+  hosting — and the constraint that it all had to run on free tiers, which is
+  what produced the reader-driven reconciliation described above instead of a
+  scheduler.
+- **Design and UI.** I set the direction: the colour palette, the components I
+  wanted integrated (the map card, the world map and the destination cards all
+  come from 21st.dev), the layout structure of each page, and the outcome I was
+  after. Where I supplied a reference design, I asked for that reference to be
+  followed rather than reinterpreted.
+- **Rendering strategy.** I decided what renders where rather than letting it
+  fall out of the framework. Server-rendered: the landing page, the catalogue,
+  the plan pages, checkout, the order status page, the account page, the admin
+  view and the legal pages — anything that touches a price, an order or a
+  session. Client-rendered, and only at the leaves: the cart (local state in
+  `localStorage` until it becomes an order), the add-to-cart and cart-count
+  controls, the cookie banner, the Realtime subscription on the order page, and
+  the animated hero card. The header and footer stay Server Components. The
+  full table is in [Rendering — chosen per surface](#rendering--chosen-per-surface).
+
+The decisions I would most want to walk through are the security model, the
+choice to drop the scheduler in favour of reader-driven reconciliation, and the
+deliberate distinction between an automatic retry and a manual one.
 
 **Bugs found by running the thing rather than reading it** — worth naming,
 because tests were green through several of them:
